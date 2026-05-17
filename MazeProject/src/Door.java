@@ -4,29 +4,48 @@
 public class Door {
 
     // current room
-    private Room myOrigin;
+    private final Room myOrigin;
 
     // door leading to
-    private Room myDestination;
+    private final Room myDestination;
 
     // question locking door
     private Question myQuestion;
 
     // tracks door state
-    private boolean myOpen = false;
+    private static boolean myOpen = false;
 
     // tracks if door is exit to game
     protected boolean myExit = false;
 
+    // tracks if door is entrance to the game
+    protected boolean myEntrance = false;
 
-    public Door(Room origin, Room destination, Question question) {
+    /**
+    Contructs a Door objec with two parameters.
+
+     @param origin starting room
+     @param destination destination room
+
+    **/
+    public Door(Room origin, Room destination) {
         myOrigin = origin;
         myDestination = destination;
-        myQuestion = question;
     }
-    protected boolean unlocked(){
+    protected boolean isLocked(){
         return myOpen;
-    };
+    }
+
+    public static void setUnlocked(){
+        myOpen = true;
+    }
+
+    public void setExit(){
+        myExit = true;
+    }
+    public void setEntrance(){
+        myEntrance = true;
+    }
 
     public void setMyQuestion(Question myQuestion) {
         this.myQuestion = myQuestion;
@@ -34,10 +53,6 @@ public class Door {
 
     public Question getMyQuestion() {
         return myQuestion;
-    }
-
-    public void setMyDestination(Room myDestination) {
-        this.myDestination = myDestination;
     }
 
     public Room getMyDestination() {
@@ -48,7 +63,4 @@ public class Door {
         return myOrigin;
     }
 
-    public void setMyOrigin(Room myOrigin) {
-        this.myOrigin = myOrigin;
-    }
 }
