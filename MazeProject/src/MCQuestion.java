@@ -1,19 +1,15 @@
 public class MCQuestion extends Question {
-    private String[] choices;
+    private final String[] choices;
 
-    public MCQuestion(String prompt, String answer, String[] choices) {
-        super(prompt, answer);
-        this.choices = choices;
+    public MCQuestion(String thePrompt, String theAnswer, String[] theChoices, int theID) {
+        super(thePrompt, theAnswer, theID);
+        this.choices = theChoices;
 
     }
 
     @Override
     public boolean checkAnswer(String userAnswer) {
         return myAnswer.equalsIgnoreCase(userAnswer.trim());
-    }
-
-    public String getMyPrompt() {
-        return myPrompt;
     }
 
     public String getType() {

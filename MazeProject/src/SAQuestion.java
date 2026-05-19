@@ -1,8 +1,8 @@
 public class SAQuestion extends Question {
 
 
-    public SAQuestion(String thePrompt, String theAnswer) {
-        super(thePrompt, theAnswer);
+    public SAQuestion(String thePrompt, String theAnswer, int theID) {
+        super(thePrompt, theAnswer, theID);
     }
 
     @Override
