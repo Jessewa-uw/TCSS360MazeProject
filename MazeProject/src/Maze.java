@@ -103,17 +103,17 @@ public class Maze implements Serializable {
         Door door = new Door(getRoom(r1, c1), getRoom(r2, c2));
 
         if (r2 == r1 - 1) {
-            grid[r1][c1].setDoor(Direction.NORTH, door);
-            grid[r2][c2].setDoor(Direction.SOUTH, door);
+            grid[r1][c1].setDoor(Direction.NORTH.ordinal(), door);
+            grid[r2][c2].setDoor(Direction.SOUTH.ordinal(), door);
         } else if (r2 == r1 + 1) {
-            grid[r1][c1].setDoor(Direction.SOUTH, door);
-            grid[r2][c2].setDoor(Direction.NORTH, door);
+            grid[r1][c1].setDoor(Direction.SOUTH.ordinal(), door);
+            grid[r2][c2].setDoor(Direction.NORTH.ordinal(), door);
         } else if (c2 == c1 - 1) {
-            grid[r1][c1].setDoor(Direction.WEST, door);
-            grid[r2][c2].setDoor(Direction.EAST, door);
+            grid[r1][c1].setDoor(Direction.WEST.ordinal(), door);
+            grid[r2][c2].setDoor(Direction.EAST.ordinal(), door);
         } else {
-            grid[r1][c1].setDoor(Direction.EAST, door);
-            grid[r2][c2].setDoor(Direction.WEST, door);
+            grid[r1][c1].setDoor(Direction.EAST.ordinal(), door);
+            grid[r2][c2].setDoor(Direction.WEST.ordinal(), door);
         }
     }
 
@@ -156,10 +156,10 @@ public class Maze implements Serializable {
             int r = room.getRow();
             int c = room.getCol();
 
-            if (r > 0        && !isWall(r, c, Direction.NORTH) && !reached[r-1][c]) { reached[r-1][c] = true; queue.add(grid[r-1][c]); }
-            if (r < SIZE - 1 && !isWall(r, c, Direction.SOUTH) && !reached[r+1][c]) { reached[r+1][c] = true; queue.add(grid[r+1][c]); }
-            if (c > 0        && !isWall(r, c, Direction.WEST)  && !reached[r][c-1]) { reached[r][c-1] = true; queue.add(grid[r][c-1]); }
-            if (c < SIZE - 1 && !isWall(r, c, Direction.EAST)  && !reached[r][c+1]) { reached[r][c+1] = true; queue.add(grid[r][c+1]); }
+            if (r > 0        && !isWall(r, c, Direction.NORTH.ordinal()) && !reached[r-1][c]) { reached[r-1][c] = true; queue.add(grid[r-1][c]); }
+            if (r < SIZE - 1 && !isWall(r, c, Direction.SOUTH.ordinal()) && !reached[r+1][c]) { reached[r+1][c] = true; queue.add(grid[r+1][c]); }
+            if (c > 0        && !isWall(r, c, Direction.WEST.ordinal())  && !reached[r][c-1]) { reached[r][c-1] = true; queue.add(grid[r][c-1]); }
+            if (c < SIZE - 1 && !isWall(r, c, Direction.EAST.ordinal())  && !reached[r][c+1]) { reached[r][c+1] = true; queue.add(grid[r][c+1]); }
         }
 
         return reached;
@@ -253,10 +253,10 @@ public class Maze implements Serializable {
         int r = room.getRow();
         int c = room.getCol();
 
-        if (r > 0        && !isWall(r, c, Direction.NORTH)) neighbors.add(grid[r - 1][c]);
-        if (r < SIZE - 1 && !isWall(r, c, Direction.SOUTH)) neighbors.add(grid[r + 1][c]);
-        if (c > 0        && !isWall(r, c, Direction.WEST))  neighbors.add(grid[r][c - 1]);
-        if (c < SIZE - 1 && !isWall(r, c, Direction.EAST))  neighbors.add(grid[r][c + 1]);
+        if (r > 0        && !isWall(r, c, Direction.NORTH.ordinal())) neighbors.add(grid[r - 1][c]);
+        if (r < SIZE - 1 && !isWall(r, c, Direction.SOUTH.ordinal())) neighbors.add(grid[r + 1][c]);
+        if (c > 0        && !isWall(r, c, Direction.WEST.ordinal()))  neighbors.add(grid[r][c - 1]);
+        if (c < SIZE - 1 && !isWall(r, c, Direction.EAST.ordinal()))  neighbors.add(grid[r][c + 1]);
 
         return neighbors;
     }
