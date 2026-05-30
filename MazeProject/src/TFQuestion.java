@@ -1,3 +1,5 @@
+package MazeProject.src;
+
 public class TFQuestion extends Question {
 
     public TFQuestion(String thePrompt, String theAnswer) {
@@ -11,7 +13,7 @@ public class TFQuestion extends Question {
 
     @Override
     public boolean checkAnswer(String theAnswer) {
-        return false;
+        return getMyAnswer().equalsIgnoreCase(theAnswer);
     }
 
     @Override

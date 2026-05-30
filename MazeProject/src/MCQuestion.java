@@ -1,3 +1,5 @@
+package MazeProject.src;
+
 public class MCQuestion extends Question {
     private String[] choices;
 
@@ -9,7 +11,7 @@ public class MCQuestion extends Question {
 
     @Override
     public boolean checkAnswer(String userAnswer) {
-        return myAnswer.equalsIgnoreCase(userAnswer.trim());
+        return getMyAnswer().equalsIgnoreCase(userAnswer.trim());
     }
 
     public String getMyPrompt() {

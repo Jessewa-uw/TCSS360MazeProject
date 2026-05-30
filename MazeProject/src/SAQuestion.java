@@ -1,3 +1,5 @@
+package MazeProject.src;
+
 public class SAQuestion extends Question {
 
 

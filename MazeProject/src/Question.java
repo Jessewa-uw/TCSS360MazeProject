@@ -1,6 +1,8 @@
+package MazeProject.src;
+
 public abstract class Question {
     protected String myPrompt;
-    protected String myAnswer;
+    private final String myAnswer;
 
     public Question(String thePrompt, String theAnswer) {
         this.myPrompt = thePrompt;
@@ -10,6 +12,8 @@ public abstract class Question {
     public String getMyPrompt() {
         return myPrompt;
     }
+
+    protected String getMyAnswer() { return myAnswer; }
 
     public abstract boolean checkAnswer(String userAnswer);
 

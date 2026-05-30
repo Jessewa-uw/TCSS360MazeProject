@@ -44,7 +44,7 @@ public class MazeController {
     public void move(Direction direction) {
         if (!maze.isRunning()) return;
 
-        Door door = currentRoom.getDoor(direction.ordinal());
+        Door door = currentRoom.getDoor(direction);
 
         if (door == null) {
             listener.onInvalidMove(direction);
@@ -56,9 +56,15 @@ public class MazeController {
         }
         advancePlayer(door);
     }
-    public void submitCorrectAnswer(Door door) {
-        door.setUnlocked();
-        advancePlayer(door);
+    public boolean submitAnswer(Door door, String answer) {
+        if (door.getMyQuestion() != null &&
+                door.getMyQuestion().checkAnswer(answer)) {
+            door.setUnlocked();
+            advancePlayer(door);
+            return true;
+        }
+        submitWrongAnswer(door);
+        return false;
     }
     public void submitWrongAnswer(Door door) {
         if (!maze.checkPossible(currentRoom)) {
@@ -70,9 +76,7 @@ public class MazeController {
         return currentRoom;
     }
     private void advancePlayer(Door door) {
-        currentRoom = door.getMyDestination().equals(currentRoom)
-                ? door.getMyOrigin()
-                : door.getMyDestination();
+        currentRoom = door.getOtherSide(currentRoom);
         listener.onPlayerMoved(currentRoom);
 
         if (currentRoom.isExit()) {

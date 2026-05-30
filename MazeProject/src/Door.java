@@ -1,54 +1,42 @@
-
+package MazeProject.src;
 
 
 public class Door {
 
-    // current room
-    private Room myOrigin;
-
-    // door leading to
-    private Room myDestination;
-
-    // question locking door
+    private final Room myOrigin;
+    private final Room myDestination;
     private Question myQuestion;
 
-    // tracks door state
-    private boolean myOpen = false;
+    private boolean myLocked = true;
 
-    // tracks if door is exit to game
-    protected boolean myExit = false;
+    protected boolean myExit     = false;
+    protected boolean myEntrance = false;
 
-
-    public Door(Room origin, Room destination, Question question) {
-        myOrigin = origin;
+    public Door(Room origin, Room destination) {
+        myOrigin      = origin;
         myDestination = destination;
-        myQuestion = question;
-    }
-    protected boolean unlocked(){
-        return myOpen;
-    };
-
-    public void setMyQuestion(Question myQuestion) {
-        this.myQuestion = myQuestion;
     }
 
-    public Question getMyQuestion() {
-        return myQuestion;
+    public boolean isLocked() {
+        return myLocked;
     }
 
-    public void setMyDestination(Room myDestination) {
-        this.myDestination = myDestination;
+    public void setUnlocked() {
+        myLocked = false;
     }
 
-    public Room getMyDestination() {
-        return myDestination;
+    /**
+     * Returns the room on the other side of this door from the given room.
+     *
+     * @param from the room the player is currently in
+     * @return the room on the other side
+     */
+    public Room getOtherSide(Room from) {
+        return from.equals(myOrigin) ? myDestination : myOrigin;
     }
 
-    public Room getMyOrigin() {
-        return myOrigin;
-    }
-
-    public void setMyOrigin(Room myOrigin) {
-        this.myOrigin = myOrigin;
-    }
+    public void     setMyQuestion(Question q) { myQuestion    = q;  }
+    public Question getMyQuestion()           { return myQuestion;  }
+    public Room     getMyDestination()        { return myDestination; }
+    public Room     getMyOrigin()             { return myOrigin;     }
 }
