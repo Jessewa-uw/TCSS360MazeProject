@@ -1,3 +1,5 @@
+package model;
+
 public class TFQuestion extends Question {
 
     public TFQuestion(String thePrompt, String theAnswer, int theID) {
@@ -6,7 +8,7 @@ public class TFQuestion extends Question {
 
     @Override
     public boolean checkAnswer(String theAnswer) {
-        return false;
+        return myAnswer.equalsIgnoreCase(theAnswer);
     }
 
     @Override

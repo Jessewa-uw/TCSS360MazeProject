@@ -1,4 +1,4 @@
-
+package model;
 
 
 public class Door {
@@ -13,7 +13,7 @@ public class Door {
     private Question myQuestion;
 
     // tracks door state
-    private static boolean myOpen = false;
+    private boolean myLocked = true;
 
     // tracks if door is exit to game
     protected boolean myExit = false;
@@ -32,12 +32,12 @@ public class Door {
         myOrigin = origin;
         myDestination = destination;
     }
-    protected boolean isLocked(){
-        return myOpen;
+    public boolean isLocked(){
+        return myLocked;
     }
 
-    public static void setUnlocked(){
-        myOpen = true;
+    public void setUnlocked(){
+        myLocked = false;
     }
 
     public void setExit(){
@@ -45,6 +45,15 @@ public class Door {
     }
     public void setEntrance(){
         myEntrance = true;
+    }
+    /**
+     * Returns the room on the other side of this door from the given room.
+     *
+     * @param from the room the player is currently in
+     * @return the room on the other side
+     */
+    public Room getOtherSide(Room from) {
+        return from.equals(myOrigin) ? myDestination : myOrigin;
     }
 
     public void setMyQuestion(Question myQuestion) {

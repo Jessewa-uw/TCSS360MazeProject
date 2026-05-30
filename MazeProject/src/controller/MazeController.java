@@ -1,11 +1,20 @@
-//package MazeProject.src;
+package controller;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
-public class MazeController {
+import model.Door;
+import model.Maze;
+import model.Room;
+import model.Direction;
+import model.Door;
+
+
+
+
+public class MazeController{
 
     public interface MazeControllerListener {
         void onPlayerMoved(Room newRoom);

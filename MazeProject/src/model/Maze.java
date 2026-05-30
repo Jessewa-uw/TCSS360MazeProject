@@ -1,6 +1,9 @@
+package model;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
+
 
 /**
  * Represents the 4x4 trivia maze game board.

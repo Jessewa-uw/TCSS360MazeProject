@@ -1,3 +1,5 @@
+package controller;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,6 +10,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import model.Question;
+import model.SAQuestion;
+import model.TFQuestion;
+import model.MCQuestion;
 
 public final class QuestionRepository {
     private static final String DB_URL = "jdbc:sqlite:MazeProjectDB.db";

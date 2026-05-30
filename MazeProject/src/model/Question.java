@@ -1,3 +1,5 @@
+package model;
+
 public abstract class Question {
     protected final String myPrompt;
     protected final String myAnswer;

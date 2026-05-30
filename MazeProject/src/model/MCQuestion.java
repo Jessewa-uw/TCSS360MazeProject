@@ -1,3 +1,5 @@
+package model;
+
 public class MCQuestion extends Question {
     private final String[] choices;
 
