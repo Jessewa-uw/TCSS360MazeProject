@@ -1,4 +1,4 @@
-package model;
+package MazeProject.src.model;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -59,6 +59,7 @@ public class Maze implements Serializable {
         possible = true;
         won      = false;
     }
+
 
 
     /**

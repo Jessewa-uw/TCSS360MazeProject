@@ -1,4 +1,4 @@
-package model;
+package MazeProject.src.model;
 
 public abstract class Question {
     protected final String myPrompt;
