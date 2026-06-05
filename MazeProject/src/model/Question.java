@@ -23,7 +23,7 @@ public abstract class Question implements Serializable {
         return myPrompt;
     }
 
-    public boolean checkAnswer(String userAnswer){ return myAnswer.equals(userAnswer); };
+    public boolean checkAnswer(String userAnswer){ return myAnswer.equals(userAnswer); }
 
     public abstract String getType();
 
