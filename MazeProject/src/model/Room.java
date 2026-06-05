@@ -1,6 +1,14 @@
 package model;
 
-public class Room {
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Room implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     // room is the exit
     protected boolean myExit = false;
@@ -21,6 +29,15 @@ public class Room {
     public Room(int row, int col) {
         myRow = row;
         myCol = col;
+    }
+    public List<Door> getDoors() {
+        List<Door> doors = new ArrayList<>();
+        for (Door door : myDoors) {
+            if (door != null) {
+                doors.add(door);
+            }
+        }
+        return doors;
     }
 
     public Door getDoor(int dir){

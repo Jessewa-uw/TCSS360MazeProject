@@ -44,7 +44,7 @@ public final class QuestionRepository {
                         case "MC" -> {
                             List<String> opts = optionsByQuestion.getOrDefault(id, List.of());
                             questions.add(new MCQuestion(
-                                    prompt, answer, opts.toArray(new String[0]), id
+                                    prompt, answer, opts, id
                             ));
                         }
                         default -> throw new SQLException("Unknown question type: " + type);

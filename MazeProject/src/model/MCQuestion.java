@@ -1,9 +1,11 @@
 package model;
 
-public class MCQuestion extends Question {
-    private final String[] choices;
+import java.util.List;
 
-    public MCQuestion(String thePrompt, String theAnswer, String[] theChoices, int theID) {
+public class MCQuestion extends Question {
+    private final List<String> choices;
+
+    public MCQuestion(String thePrompt, String theAnswer, List<String> theChoices, int theID) {
         super(thePrompt, theAnswer, theID);
         this.choices = theChoices;
 
@@ -18,8 +20,13 @@ public class MCQuestion extends Question {
         return "Multiple Choices";
     }
 
-    public String[] getChoices() {
+    public List<String> getChoices() {
         return choices;
+    }
+
+    @Override
+    public String toString() {
+        return "\tPrompt: " + this.myPrompt + "\tOptions: " + this.choices.toString() + "\tAnswer: " + this.myAnswer;
     }
 
 }

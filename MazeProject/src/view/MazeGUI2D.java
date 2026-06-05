@@ -5,32 +5,57 @@ import model.*;
 import javax.swing.*;
 import java.awt.*;
 
-
+/**
+ * A top-down rendering of the whole maze grid, used as the corner minimap on
+ * the in-game screen. It is a pure view: it paints the maze and highlights the
+ * player's current room, but holds no game logic. The enclosing screen tells it
+ * where the player is via {@link #setCurrentRoom(Room)}.
+ */
 public class MazeGUI2D extends JPanel {
 
-
-    private static final int ROOM_SIZE = 100;
+    /** Default room edge length in pixels (full-size rendering). */
+    public static final int DEFAULT_ROOM_SIZE = 200;
 
     private final Maze myMaze;
-    private final Room currentRoom;
-    final static int GAP = ROOM_SIZE / 3;
-    final static int doorWidth = GAP;
-    final static int doorHeight = 6;
+    private Room currentRoom;
 
+    private final int roomSize;
+    private final int gap;
+    private final int doorWidth;
+    private final int doorHeight;
+
+    /** Builds a full-size map. */
     public MazeGUI2D(Maze theMaze) {
+        this(theMaze, DEFAULT_ROOM_SIZE);
+    }
 
+    /**
+     * Builds a map with a custom room size, letting the same renderer serve as
+     * both a full view and a shrunken minimap.
+     *
+     * @param theMaze     the maze to draw
+     * @param theRoomSize edge length of each room in pixels
+     */
+    public MazeGUI2D(Maze theMaze, int theRoomSize) {
         myMaze = theMaze;
         currentRoom = myMaze.getEntrance();
 
-        setPreferredSize(new Dimension(
-                Maze.SIZE * ROOM_SIZE,
-                Maze.SIZE * ROOM_SIZE
-        ));
-        final JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(this);
-        frame.pack();
-        frame.setVisible(true);
+        roomSize = theRoomSize;
+        gap = roomSize / 3;
+        doorWidth = gap;
+        doorHeight = Math.max(3, roomSize / 33);
+
+        setPreferredSize(new Dimension(Maze.SIZE * roomSize, Maze.SIZE * roomSize));
+    }
+
+    /**
+     * Highlights the given room as the player's location and repaints.
+     *
+     * @param room the room the player now occupies
+     */
+    public void setCurrentRoom(Room room) {
+        currentRoom = room;
+        repaint();
     }
 
     @Override
@@ -40,100 +65,82 @@ public class MazeGUI2D extends JPanel {
 
         for (int r = 0; r < Maze.SIZE; r++) {
             for (int c = 0; c < Maze.SIZE; c++) {
-
                 Room room = myMaze.getRoom(r, c);
-
-                int x = c * ROOM_SIZE;
-                int y = r * ROOM_SIZE;
-
-                drawRoom(g2d, room, x, y);
+                drawRoom(g2d, room, c * roomSize, r * roomSize);
             }
         }
     }
 
     private void drawRoom(Graphics2D g, Room room, int x, int y) {
-        g.setStroke(new BasicStroke(4));
-
+        g.setStroke(new BasicStroke(Math.max(1, roomSize / 50)));
 
         if (room.isEntrance()) {
             g.setColor(Color.GREEN);
-        }
-        else if (room.isExit()) {
+        } else if (room.isExit()) {
             g.setColor(Color.RED);
-        }
-        else {
+        } else {
             g.setColor(Color.BLACK);
         }
+        g.fillRect(x, y, roomSize, roomSize);
 
-        g.fillRect(x, y, ROOM_SIZE, ROOM_SIZE);
-
-        DrawNorth(g, room, x, y);
-        DrawSouth(g, room, x, y);
-        DrawEast(g, room, x, y);
-        DrawWest(g, room, x, y);
+        drawNorth(g, room, x, y);
+        drawSouth(g, room, x, y);
+        drawEast(g, room, x, y);
+        drawWest(g, room, x, y);
 
         if (room == currentRoom) {
-
+            int oval = roomSize / 3;
+            int off = (roomSize - oval) / 2;
             g.setColor(Color.BLUE);
-
-            g.fillOval(
-                    x + 35,
-                    y + 35,
-                    30,
-                    30
-            );
+            g.fillOval(x + off, y + off, oval, oval);
         }
     }
-    private void DrawNorth(Graphics2D g, Room room, int x, int y) {
+
+    private void drawNorth(Graphics2D g, Room room, int x, int y) {
         g.setColor(Color.BLACK);
         if (room.getDoor(Direction.NORTH.ordinal()) == null) {
-            g.drawLine(x, y, x + ROOM_SIZE, y);
+            g.drawLine(x, y, x + roomSize, y);
         } else {
-            g.drawLine(x, y, x + GAP, y);
-            g.drawLine(x + ROOM_SIZE - GAP, y, x + ROOM_SIZE, y);
+            g.drawLine(x, y, x + gap, y);
+            g.drawLine(x + roomSize - gap, y, x + roomSize, y);
             g.setColor(new Color(51, 27, 27));
-            g.fillRect(x + (ROOM_SIZE - doorWidth) / 2, y - doorHeight / 2 ,
-                    doorWidth, doorHeight);
+            g.fillRect(x + (roomSize - doorWidth) / 2, y - doorHeight / 2, doorWidth, doorHeight);
         }
     }
-    private void DrawSouth(Graphics2D g, Room room, int x, int y) {
+
+    private void drawSouth(Graphics2D g, Room room, int x, int y) {
         g.setColor(Color.BLACK);
         if (room.getDoor(Direction.SOUTH.ordinal()) == null) {
-            g.drawLine(x, y + ROOM_SIZE,
-                    x + ROOM_SIZE, y + ROOM_SIZE);
+            g.drawLine(x, y + roomSize, x + roomSize, y + roomSize);
         } else {
-            g.drawLine(x, y + ROOM_SIZE, x + GAP, y + ROOM_SIZE);
-            g.drawLine(x + ROOM_SIZE - GAP, y + ROOM_SIZE,
-                    x + ROOM_SIZE, y  + ROOM_SIZE);
+            g.drawLine(x, y + roomSize, x + gap, y + roomSize);
+            g.drawLine(x + roomSize - gap, y + roomSize, x + roomSize, y + roomSize);
             g.setColor(new Color(51, 27, 27));
-            g.fillRect(x + (ROOM_SIZE - doorWidth) / 2, y + ROOM_SIZE - doorHeight / 2,
-                    doorWidth, doorHeight);
+            g.fillRect(x + (roomSize - doorWidth) / 2, y + roomSize - doorHeight / 2, doorWidth, doorHeight);
         }
     }
-    private void DrawWest(Graphics2D g, Room room, int x, int y) {
+
+    private void drawWest(Graphics2D g, Room room, int x, int y) {
         g.setColor(Color.BLACK);
         if (room.getDoor(Direction.WEST.ordinal()) == null) {
-            g.drawLine(x, y, x, y + ROOM_SIZE);
+            g.drawLine(x, y, x, y + roomSize);
         } else {
-            g.drawLine(x, y, x, y + GAP);
-            g.drawLine(x, y + ROOM_SIZE - GAP, x, y  + ROOM_SIZE);
+            g.drawLine(x, y, x, y + gap);
+            g.drawLine(x, y + roomSize - gap, x, y + roomSize);
             g.setColor(new Color(51, 27, 27));
-            g.fillRect(x - 3, y + (ROOM_SIZE - GAP) / 2,
-                    6, GAP);
+            g.fillRect(x - doorHeight / 2, y + (roomSize - gap) / 2, doorHeight, gap);
         }
     }
-    private void DrawEast(Graphics2D g, Room room, int x, int y) {
+
+    private void drawEast(Graphics2D g, Room room, int x, int y) {
         g.setColor(Color.BLACK);
         if (room.getDoor(Direction.EAST.ordinal()) == null) {
-            g.drawLine(x + ROOM_SIZE, y,
-                    x + ROOM_SIZE, y + ROOM_SIZE);
+            g.drawLine(x + roomSize, y, x + roomSize, y + roomSize);
         } else {
-            g.drawLine(x + ROOM_SIZE, y, x + ROOM_SIZE, y + GAP);
-            g.drawLine(x + ROOM_SIZE, y + ROOM_SIZE - GAP,
-                    x + ROOM_SIZE, y + ROOM_SIZE);
+            g.drawLine(x + roomSize, y, x + roomSize, y + gap);
+            g.drawLine(x + roomSize, y + roomSize - gap, x + roomSize, y + roomSize);
             g.setColor(new Color(51, 27, 27));
-            g.fillRect(x + ROOM_SIZE - 3, y + (ROOM_SIZE - GAP) / 2,
-                    6, GAP);
+            g.fillRect(x + roomSize - doorHeight / 2, y + (roomSize - gap) / 2, doorHeight, gap);
         }
     }
 }

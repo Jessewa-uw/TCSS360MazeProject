@@ -1,10 +1,12 @@
-import controller.MazeController;
-import model.Maze;
-import view.MazeGUI2D;
+import view.GameWindow;
+
+import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
-        Maze maze = new Maze();
-        MazeGUI2D mazeGUI = new MazeGUI2D(maze);
+        SwingUtilities.invokeLater(() -> {
+            GameWindow window = new GameWindow();
+            window.setVisible(true);
+        });
     }
 }

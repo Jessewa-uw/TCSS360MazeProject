@@ -9,9 +9,6 @@ import model.Door;
 import model.Maze;
 import model.Room;
 import model.Direction;
-import model.Door;
-
-
 
 
 public class MazeController{
@@ -55,18 +52,22 @@ public class MazeController{
 
         Door door = currentRoom.getDoor(direction.ordinal());
 
-        if (door == null) {
+        // No door, or a door permanently blocked by a wrong answer: can't pass.
+        if (door == null || door.isBlocked()) {
             listener.onInvalidMove(direction);
             return;
         }
-        if (door.isLocked()) {
-            listener.onDoorAttempt(door, false);
+        // Already answered correctly: walk straight through.
+        if (door.isOpen()) {
+            advancePlayer(door);
             return;
         }
-        advancePlayer(door);
+        // Unanswered: prompt the player with this door's question.
+        listener.onDoorAttempt(door, false);
     }
+
     public void submitCorrectAnswer(Door door) {
-        door.setUnlocked();
+        door.unlock();
         advancePlayer(door);
     }
     public void submitWrongAnswer(Door door) {
@@ -77,6 +78,16 @@ public class MazeController{
     }
     public Room getCurrentRoom() {
         return currentRoom;
+    }
+
+    /**
+     * Places the player in the given room. Used when restoring a saved game so
+     * the player resumes where they left off rather than at the entrance.
+     *
+     * @param room the room to start in
+     */
+    public void setCurrentRoom(Room room) {
+        currentRoom = room;
     }
     private void advancePlayer(Door door) {
         currentRoom = door.getMyDestination().equals(currentRoom)

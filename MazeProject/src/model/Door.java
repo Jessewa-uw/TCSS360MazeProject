@@ -1,7 +1,12 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
 
-public class Door {
+public class Door implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     // current room
     private final Room myOrigin;
@@ -13,7 +18,7 @@ public class Door {
     private Question myQuestion;
 
     // tracks door state
-    private boolean myLocked = true;
+    private DoorState myState = DoorState.UNANSWERED;
 
     // tracks if door is exit to game
     protected boolean myExit = false;
@@ -33,11 +38,21 @@ public class Door {
         myDestination = destination;
     }
     public boolean isLocked(){
-        return myLocked;
+        return myState == DoorState.UNANSWERED;
     }
 
-    public void setUnlocked(){
-        myLocked = false;
+    public void unlock(){
+        myState = DoorState.OPEN;
+    }
+
+    public void block(){
+        myState = DoorState.BLOCKED;
+    }
+    public boolean isBlocked(){
+        return myState == DoorState.BLOCKED;
+    }
+    public boolean isOpen(){
+        return myState == DoorState.OPEN;
     }
 
     public void setExit(){

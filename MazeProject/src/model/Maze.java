@@ -1,7 +1,10 @@
 package model;
 
+import controller.QuestionAssigner;
+
 import java.io.Serial;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -17,7 +20,7 @@ public class Maze implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // Number of rows and columns in the maze grid.
-    public static final int SIZE = 4;
+    public static final int SIZE = 5;
 
     /**
      * Probability that any given wall between two adjacent rooms is
@@ -48,10 +51,11 @@ public class Maze implements Serializable {
      * generating a connected layout. Every run produces a different maze
      * with multiple possible paths from entrance to exit.
      */
-    public Maze() {
+    public Maze() throws SQLException {
         grid = new Room[SIZE][SIZE];
         allocateRooms();
         generateMaze();
+        new QuestionAssigner(getDoors());
 
         entrance = grid[0][0];
         exit     = grid[SIZE - 1][SIZE - 1];
@@ -172,6 +176,7 @@ public class Maze implements Serializable {
      * Returns true if there is no open door between the room at
      * (r, c) and its neighbor in the given direction.
      * A null door means the wall was never opened during generation.
+     * A blocked door means the player ran out of attempts.
      *
      * @param r   row of the room to check
      * @param c   column of the room to check
@@ -180,7 +185,7 @@ public class Maze implements Serializable {
      */
     private boolean isWall(int r, int c, int dir) {
         Door door = grid[r][c].getDoor(dir);
-        return door == null || door.isLocked();
+        return door == null || door.isBlocked();
     }
 
     /**
@@ -296,6 +301,18 @@ public class Maze implements Serializable {
         if (r < 0 || r >= SIZE || c < 0 || c >= SIZE)
             throw new IllegalArgumentException("Room out of bounds: (" + r + ", " + c + ")");
         return grid[r][c];
+    }
+
+    public List<Door> getDoors() {
+        // A LinkedHashSet dedupes by identity (Door uses default equals), so
+        // each shared door — stored on both rooms it connects — is counted once.
+        Set<Door> doors = new LinkedHashSet<>();
+        for (int r = 0; r < SIZE; r++){
+            for (int c = 0; c < SIZE; c++){
+                doors.addAll(getRoom(r, c).getDoors());
+            }
+        }
+        return new ArrayList<>(doors);
     }
 
     /**
