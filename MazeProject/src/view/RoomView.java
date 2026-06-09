@@ -43,8 +43,6 @@ public class RoomView extends JPanel {
     /** Folder (relative to the working directory) holding the layer PNGs. */
     private static final String ASSET_DIR = "resources/rooms";
 
-    /** Native size of every layer PNG, in pixels. */
-    private static final int TILE = 100;
 
     private static final String[] COLORS =
             {"rouge", "lime", "green", "periwinkle", "brown", "maroon"};

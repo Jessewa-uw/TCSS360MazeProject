@@ -2,7 +2,6 @@ package controller;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import model.Door;
