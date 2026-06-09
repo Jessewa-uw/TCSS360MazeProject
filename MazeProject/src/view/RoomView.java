@@ -50,6 +50,8 @@ public class RoomView extends JPanel {
             {"red-oak-floors", "lt-brown-floors", "brown-floors"};
     private static final String[] LAYOUTS = {"room-1", "room-2"};
 
+    private static final String PLAYER = "player";
+
 
     private static final long COLOR_SALT = 0x9E3779B97F4A7C15L;
     private static final long FLOOR_SALT = 0xC2B2AE3D27D4EB4FL;
@@ -125,7 +127,6 @@ public class RoomView extends JPanel {
             drawFallbackRoom(g, x, y, size);
         }
 
-        drawOverlay(g, x, y, size);
     }
     /**
      * Builds the ordered (bottom-to-top) list of layer names for a room: the
@@ -170,6 +171,7 @@ public class RoomView extends JPanel {
                 layers.add(prefix + "-door");
             }
         }
+        layers.add(PLAYER);
         return layers;
     }
 
@@ -227,30 +229,6 @@ public class RoomView extends JPanel {
         return img;
     }
 
-    /**
-     * Paints a cyan player marker centered in the room
-     * @param g the 2D graphics context
-     * @param x the pixel x coordinate of the rooms top left corner
-     * @param y the pixel y coordinate of the rooms top left corner
-     * @param size the edge length of the square room
-     */
-    private void drawOverlay(Graphics2D g, int x, int y, int size) {
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        int marker = size / 5;
-        g.setColor(Color.CYAN);
-        g.fillOval(x + (size - marker) / 2, y + (size - marker) / 2, marker, marker);
-
-        g.setFont(g.getFont().deriveFont(Font.BOLD, 14f));
-        if (currentRoom.isExit()) {
-            g.setColor(Color.RED);
-            g.drawString("EXIT", x + size / 2 - 16, y + size / 2 - marker / 2 - 6);
-        } else if (currentRoom.isEntrance()) {
-            g.setColor(Color.GREEN);
-            g.drawString("START", x + size / 2 - 20, y + size / 2 - marker / 2 - 6);
-        }
-    }
 
     /**
      * Draws geometric placeholder room
