@@ -1,5 +1,6 @@
-package model;
+package MazeProject.test.model;
 
+import model.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * answer-checking rules (which differ by type) and the type/prompt accessors.
  * Pure model logic — no database required.
  */
-class QuestionTest {
+public class QuestionTest {
 
 
     @Test

@@ -47,9 +47,9 @@ public final class QuestionRepository {
                     String type = rs.getString("Question_type");
 
                     switch (type) {
-                        case "SA" -> questions.add(new SAQuestion(prompt, answer, id));
-                        case "TF" -> questions.add(new TFQuestion(prompt, answer, id));
-                        case "MC" -> {
+                        case "Short Answer" -> questions.add(new SAQuestion(prompt, answer, id));
+                        case "True False" -> questions.add(new TFQuestion(prompt, answer, id));
+                        case "Multiple Choice" -> {
                             List<String> opts = optionsByQuestion.getOrDefault(id, List.of());
                             questions.add(new MCQuestion(
                                     prompt, answer, opts, id
