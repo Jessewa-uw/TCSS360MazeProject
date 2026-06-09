@@ -58,6 +58,10 @@ public class MazeGUI2D extends JPanel {
         repaint();
     }
 
+    /**
+     * Paints full maze grid by iterating every cell
+     * @param theG the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics theG) {
         super.paintComponent(theG);
@@ -71,6 +75,13 @@ public class MazeGUI2D extends JPanel {
         }
     }
 
+    /**
+     * Draws a single room cell at the given pixel coordinates
+     * @param g 2D graphics content
+     * @param room room to draw
+     * @param x pixel x coordinate of rooms top left corner
+     * @param y pixel y coordinate of rooms top left corner
+     */
     private void drawRoom(Graphics2D g, Room room, int x, int y) {
         g.setStroke(new BasicStroke(Math.max(1, roomSize / 50)));
 
@@ -96,6 +107,13 @@ public class MazeGUI2D extends JPanel {
         }
     }
 
+    /**
+     * Draws the north wall of the room
+     * @param g 2D graphics content
+     * @param room room to draw
+     * @param x pixel x coordinate of rooms top left corner
+     * @param y pixel y coordinate of rooms top left corner
+     */
     private void drawNorth(Graphics2D g, Room room, int x, int y) {
         g.setColor(Color.BLACK);
         if (room.getDoor(Direction.NORTH.ordinal()) == null) {
@@ -108,6 +126,13 @@ public class MazeGUI2D extends JPanel {
         }
     }
 
+    /**
+     * Draws south wall of the room
+     * @param g 2D graphics content
+     * @param room room to draw
+     * @param x pixel x coordinate of rooms top left corner
+     * @param y pixel y coordinate of rooms top left corner
+     */
     private void drawSouth(Graphics2D g, Room room, int x, int y) {
         g.setColor(Color.BLACK);
         if (room.getDoor(Direction.SOUTH.ordinal()) == null) {
@@ -120,6 +145,13 @@ public class MazeGUI2D extends JPanel {
         }
     }
 
+    /**
+     * Draws the west wall of the room
+     * @param g 2D graphics content
+     * @param room room to draw
+     * @param x pixel x coordinate of rooms top left corner
+     * @param y pixel y coordinate of rooms top left corner
+     */
     private void drawWest(Graphics2D g, Room room, int x, int y) {
         g.setColor(Color.BLACK);
         if (room.getDoor(Direction.WEST.ordinal()) == null) {
@@ -132,6 +164,13 @@ public class MazeGUI2D extends JPanel {
         }
     }
 
+    /**
+     * Draws east wall of the room
+     * @param g 2D graphics content
+     * @param room room to draw
+     * @param x pixel x coordinate of rooms top left corner
+     * @param y pixel y coordinate of rooms top left corner
+     */
     private void drawEast(Graphics2D g, Room room, int x, int y) {
         g.setColor(Color.BLACK);
         if (room.getDoor(Direction.EAST.ordinal()) == null) {

@@ -13,15 +13,30 @@ public class GameState implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
+    /**
+     * The full maze including door states
+     */
     private final Maze myMaze;
+    /**
+     * The room the player is occupying when saving the game
+     */
     private final Room myCurrentRoom;
 
+    /**
+     * Constructs a snapshot of the game state from the current maze and
+     * player position
+     * @param theMaze the maze to snapshot
+     * @param theCurrentRoom the room the player is currently in
+     */
     public GameState(Maze theMaze, Room theCurrentRoom) {
         myMaze = theMaze;
         myCurrentRoom = theCurrentRoom;
     }
 
+    /**
+     * Returns the maze captured at the time of save
+     * @return the saved maze
+     */
     public Maze getMaze() {
         return myMaze;
     }

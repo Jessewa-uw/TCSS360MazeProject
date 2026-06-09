@@ -16,9 +16,17 @@ import model.SAQuestion;
 import model.TFQuestion;
 import model.MCQuestion;
 
+/**
+ * Data access object responsible for loading the questions from the SQLite database
+ */
 public final class QuestionRepository {
     private static final String DB_URL = "jdbc:sqlite:MazeProjectDB.db";
 
+    /**
+     * Loads every question from the database and returns them as a list
+     * @return a list of all questions found in the database
+     * @throws SQLException if the database cannot be reached or an unrecognized type is found
+     */
     public List<Question> loadAll() throws SQLException {
         List<Question> questions = new ArrayList<>();
 
@@ -56,6 +64,12 @@ public final class QuestionRepository {
         return Collections.unmodifiableList(questions);
     }
 
+    /**
+     * Gets all rows from the table and groups them by question id
+     * @param conn a database connection
+     * @return map to the ordered list of options for the question
+     * @throws SQLException if the table cannot be reached
+     */
     private Map<Integer, List<String>> loadOptions(Connection conn) throws SQLException {
         Map<Integer, List<String>> result = new HashMap<>();
         String sql = "SELECT Question_id, Option_Text FROM options";

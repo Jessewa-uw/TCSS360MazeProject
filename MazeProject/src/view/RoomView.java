@@ -67,6 +67,10 @@ public class RoomView extends JPanel {
 
     private Room currentRoom;
 
+    /**
+     * Constructs a room view display of the starting room
+     * @param theStartRoom the room to initially display
+     */
     public RoomView(Room theStartRoom) {
         currentRoom = theStartRoom;
         setPreferredSize(new Dimension(420, 420));
@@ -91,6 +95,10 @@ public class RoomView extends JPanel {
         repaint();
     }
 
+    /**
+     * Composites rooms PNG layers into a panel
+     * @param theG the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics theG) {
         super.paintComponent(theG);
@@ -165,14 +173,29 @@ public class RoomView extends JPanel {
         return layers;
     }
 
+    /**
+     * Returns the wall color variant name
+     * @param room the room to look up
+     * @return one of the colors
+     */
     private static String colorOf(Room room) {
         return COLORS[pickIndex(room, COLOR_SALT, COLORS.length)];
     }
 
+    /**
+     * Returns floor texture variant name
+     * @param room the room to look up
+     * @return one of the floors
+     */
     private static String floorOf(Room room) {
         return FLOORS[pickIndex(room, FLOOR_SALT, FLOORS.length)];
     }
 
+    /**
+     * Returns layout variant
+     * @param room the room to look up
+     * @return one of the layouts
+     */
     private static String layoutOf(Room room) {
         return LAYOUTS[pickIndex(room, LAYOUT_SALT, LAYOUTS.length)];
     }
@@ -204,6 +227,13 @@ public class RoomView extends JPanel {
         return img;
     }
 
+    /**
+     * Paints a cyan player marker centered in the room
+     * @param g the 2D graphics context
+     * @param x the pixel x coordinate of the rooms top left corner
+     * @param y the pixel y coordinate of the rooms top left corner
+     * @param size the edge length of the square room
+     */
     private void drawOverlay(Graphics2D g, int x, int y, int size) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -222,7 +252,13 @@ public class RoomView extends JPanel {
         }
     }
 
-
+    /**
+     * Draws geometric placeholder room
+     * @param g the 2D graphics context
+     * @param x the pixel x coordinate of the rooms top left corner
+     * @param y the pixel y coordinate of the rooms top left corner
+     * @param size the edge length of the square room
+     */
     private void drawFallbackRoom(Graphics2D g, int x, int y, int size) {
         int doorSpan = size / 3;
 
@@ -249,6 +285,15 @@ public class RoomView extends JPanel {
         g.drawString("E", x + size + 14, y + size / 2 + 5);
     }
 
+    /**
+     * Draws single door indicator
+     * @param g the 2D graphics context
+     * @param door the door to represent
+     * @param x the pixel x coordinate of the rooms top left corner
+     * @param y the pixel y coordinate of the rooms top left corner
+     * @param w the width of the door
+     * @param h the height of the door
+     */
     private void drawFallbackDoor(Graphics2D g, Door door, int x, int y, int w, int h) {
         if (door == null) {
             return;

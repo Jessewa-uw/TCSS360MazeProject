@@ -16,7 +16,10 @@ import java.awt.GridBagLayout;
  * Button actions delegate to the {@link GameWindow} coordinator.
  */
 public class WelcomePanel extends JPanel {
-
+    /**
+     * Constructs welcome screen and wires all button actions
+     * @param theWindow coordinator that handles scene transitions
+     */
     public WelcomePanel(GameWindow theWindow) {
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
@@ -47,6 +50,11 @@ public class WelcomePanel extends JPanel {
         add(column);
     }
 
+    /**
+     * Creates uniformly sized buttons for use in the welcome screen
+     * @param text label to display on button
+     * @return configures button ready for action listener
+     */
     private static JButton makeButton(String text) {
         JButton button = new JButton(text);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);

@@ -36,8 +36,13 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
 
     /** Room edge length for the shrunken corner minimap. */
     private static final int MINIMAP_ROOM_SIZE = 60;
-
+    /**
+     * key for the minimap card
+     */
     private static final String MAP_CARD = "map";
+    /**
+     * key for the question card
+     */
     private static final String QUESTION_CARD = "question";
 
     private final Maze myMaze;
@@ -58,6 +63,10 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
     /**
      * Builds the in-game screen with the player placed in {@code theStartRoom},
      * letting a loaded game resume from a saved position.
+     *
+     * @param theWindow  GameWindow used for transition
+     * @param theMaze the maze to play
+     * @param theStartRoom  the room to place the player in
      */
     public GamePanel(GameWindow theWindow, Maze theMaze, Room theStartRoom) {
         myMaze = theMaze;
@@ -82,6 +91,10 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         myRoomView.requestFocusInWindow();
     }
 
+    /**
+     * Invoked when player successfully moves into new room
+     * @param newRoom the room the player has entered.
+     */
     @Override
     public void onPlayerMoved(Room newRoom) {
         myMinimap.setCurrentRoom(newRoom);
@@ -91,6 +104,9 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         myRoomView.requestFocusInWindow();
     }
 
+    /**
+     * Invoked when the player enters the exit room
+     */
     @Override
     public void onGameWon() {
         showMap();
@@ -99,6 +115,10 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
                 "Victory", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Invoked when the game ends in defeat
+     * @param reason Description of why the game ended
+     */
     @Override
     public void onGameOver(String reason) {
         showMap();
@@ -106,12 +126,22 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
                 reason, "Game Over", JOptionPane.WARNING_MESSAGE);
     }
 
+    /**
+     * Invoked when the player attempts to move in a direction with no
+     * usable door
+     * @param direction the direction the player tried to move in
+     */
     @Override
     public void onInvalidMove(Direction direction) {
         // No usable door that way — audible feedback, stay put.
         Toolkit.getDefaultToolkit().beep();
     }
 
+    /**
+     * Invoked when player reaches a locked door
+     * @param door the attempted door
+     * @param correct if the answer to the question was correct or not
+     */
     @Override
     public void onDoorAttempt(Door door, boolean correct) {
         Question question = door.getMyQuestion();
@@ -131,7 +161,11 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         panel.focusInput();
     }
 
-
+    /**
+     * Evaluates player's answer for the locked door
+     * @param door the door whose question was answered
+     * @param answer the player's submitted answer
+     */
     private void handleAnswer(Door door, String answer) {
         Question question = door.getMyQuestion();
         if (question.checkAnswer(answer)) {
@@ -146,6 +180,10 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         }
     }
 
+    /**
+     * Dismisses question panel and returns to minimap without an
+     * answer submission
+     */
     private void handleCancel() {
         showMap();
         myRoomView.requestFocusInWindow();
@@ -165,7 +203,11 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         myRoomView.requestFocusInWindow();
     }
 
-
+    /**
+     * Builds HUD panel placed at the top of the screen
+     * @param theWindow window used by menu button to navigate
+     * @return constructed HUD
+     */
     private JPanel buildHud(GameWindow theWindow) {
         JPanel hud = new JPanel(new BorderLayout());
         hud.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
@@ -184,6 +226,10 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         return hud;
     }
 
+    /**
+     * Builds corner panel that houses minimap and question cards
+     * @return the constructed corner
+     */
     private JPanel buildCorner() {
         JPanel mapCard = new JPanel(new BorderLayout());
         mapCard.setBorder(BorderFactory.createTitledBorder("Map"));
@@ -197,14 +243,24 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         return myCorner;
     }
 
+    /**
+     * Flips corner to show minimap
+     */
     private void showMap() {
         myCornerCards.show(myCorner, MAP_CARD);
     }
 
+    /**
+     * Flips corner to show active question
+     */
     private void showQuestion() {
         myCornerCards.show(myCorner, QUESTION_CARD);
     }
 
+    /**
+     * Updates HUD states to show players current grid position
+     * @param room the room the player is currently in
+     */
     private void updateStatus(Room room) {
         myStatus.setText("Room (" + room.getRow() + ", " + room.getCol() + ")");
     }
