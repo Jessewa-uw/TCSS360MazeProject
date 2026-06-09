@@ -82,10 +82,6 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         myRoomView.requestFocusInWindow();
     }
 
-    // ------------------------------------------------------------------
-    // MazeControllerListener
-    // ------------------------------------------------------------------
-
     @Override
     public void onPlayerMoved(Room newRoom) {
         myMinimap.setCurrentRoom(newRoom);
@@ -135,15 +131,10 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         panel.focusInput();
     }
 
-    // ------------------------------------------------------------------
-    // Question handling
-    // ------------------------------------------------------------------
 
     private void handleAnswer(Door door, String answer) {
         Question question = door.getMyQuestion();
         if (question.checkAnswer(answer)) {
-            // Correct: the controller advances the player, which fires
-            // onPlayerMoved and restores the minimap + focus.
             myController.submitCorrectAnswer(door);
         } else {
             door.block();
@@ -151,13 +142,11 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
             myMinimap.repaint();
             showMap();
             myRoomView.requestFocusInWindow();
-            // May end the game if this seals off the exit; fires onGameOver.
             myController.submitWrongAnswer(door);
         }
     }
 
     private void handleCancel() {
-        // Player backed out — door stays unanswered, no penalty.
         showMap();
         myRoomView.requestFocusInWindow();
     }
@@ -176,9 +165,6 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         myRoomView.requestFocusInWindow();
     }
 
-    // ------------------------------------------------------------------
-    // Layout helpers
-    // ------------------------------------------------------------------
 
     private JPanel buildHud(GameWindow theWindow) {
         JPanel hud = new JPanel(new BorderLayout());

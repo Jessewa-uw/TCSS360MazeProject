@@ -24,10 +24,10 @@ public final class QuestionRepository {
 
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
 
-            // Step 1: load all MC options into a map keyed by question id
+
             Map<Integer, List<String>> optionsByQuestion = loadOptions(conn);
 
-            // Step 2: load all questions, attaching options for MC ones
+
             String sql = "SELECT Question_id, Question, Answer, Question_type FROM QA";
             try (PreparedStatement ps = conn.prepareStatement(sql);
                  ResultSet rs = ps.executeQuery()) {

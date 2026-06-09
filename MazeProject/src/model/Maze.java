@@ -19,7 +19,6 @@ public class Maze implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    // Number of rows and columns in the maze grid.
     public static final int SIZE = 5;
 
     /**
@@ -28,23 +27,12 @@ public class Maze implements Serializable {
      */
     private static final double DOOR_PROBABILITY = 0.5;
 
-    // The 2D grid of rooms that makes up the maze.
     private final Room[][] grid;
 
-    // The room where the player begins.
     private final Room entrance;
 
-    // The room the player must reach to win.
-    private final Room exit;
-
-    // Whether the game is currently in progress.
     private boolean running;
 
-    // Whether a path from the player's current room to the exit still exists.
-    private boolean possible;
-
-    // Whether the player has successfully reached the exit room.
-    private boolean won;
 
     /**
      * Constructs a new Maze, allocating all rooms and randomly
@@ -58,10 +46,8 @@ public class Maze implements Serializable {
         new QuestionAssigner(getDoors());
 
         entrance = grid[0][0];
-        exit     = grid[SIZE - 1][SIZE - 1];
         running  = true;
-        possible = true;
-        won      = false;
+
     }
 
 
@@ -133,11 +119,15 @@ public class Maze implements Serializable {
     private void ensureConnected(Random rng) {
         boolean[][] reached = bfsReachable();
 
-        for (int r = 0; r < SIZE; r++) {
-            for (int c = 0; c < SIZE; c++) {
-                if (!reached[r][c]) {
-                    openRandomNeighborDoor(r, c, rng);
-                    reached = bfsReachable();
+        boolean progress = true;
+        while (progress) {
+            progress = false;
+            for (int r = 0; r < SIZE; r++) {
+                for (int c = 0; c < SIZE; c++) {
+                    if (!reached[r][c] && connectToReachedNeighbor(r, c, reached, rng)) {
+                        reached = bfsReachable();
+                        progress = true;
+                    }
                 }
             }
         }
@@ -189,24 +179,30 @@ public class Maze implements Serializable {
     }
 
     /**
-     * Opens one randomly chosen door between the isolated room at
-     * (r, c) and one of its neighbors. The neighbor is selected
-     * from a shuffled list so the connection point is unpredictable.
+     * Opens a door from the isolated room at (r, c) to a randomly chosen
+     * neighbor that is already reachable from the entrance, joining the room to
+     * the entrance's connected component.
      *
-     * @param r   row of the isolated room
-     * @param c   column of the isolated room
-     * @param rng shared instance
+     * @param r       row of the isolated room
+     * @param c       column of the isolated room
+     * @param reached current entrance reachability grid
+     * @param rng     shared instance
+     * @return true if a reachable neighbor was found and a door opened; false
+     *         if no neighbor is reachable yet (retry after others connect)
      */
-    private void openRandomNeighborDoor(int r, int c, Random rng) {
+    private boolean connectToReachedNeighbor(int r, int c, boolean[][] reached, Random rng) {
         List<int[]> neighbors = new ArrayList<>();
-        if (r > 0)        neighbors.add(new int[]{r - 1, c});
-        if (r < SIZE - 1) neighbors.add(new int[]{r + 1, c});
-        if (c > 0)        neighbors.add(new int[]{r, c - 1});
-        if (c < SIZE - 1) neighbors.add(new int[]{r, c + 1});
+        if (r > 0        && reached[r - 1][c]) neighbors.add(new int[]{r - 1, c});
+        if (r < SIZE - 1 && reached[r + 1][c]) neighbors.add(new int[]{r + 1, c});
+        if (c > 0        && reached[r][c - 1]) neighbors.add(new int[]{r, c - 1});
+        if (c < SIZE - 1 && reached[r][c + 1]) neighbors.add(new int[]{r, c + 1});
 
-        Collections.shuffle(neighbors, rng);
-        int[] chosen = neighbors.getFirst();
+        if (neighbors.isEmpty()) {
+            return false;
+        }
+        int[] chosen = neighbors.get(rng.nextInt(neighbors.size()));
         createDoor(r, c, chosen[0], chosen[1]);
+        return true;
     }
 
     /**
@@ -228,7 +224,6 @@ public class Maze implements Serializable {
             Room room = queue.poll();
 
             if (room.isExit()) {
-                possible = true;
                 return true;
             }
 
@@ -242,7 +237,6 @@ public class Maze implements Serializable {
             }
         }
 
-        possible = false;
         running  = false;
         return false;
     }
@@ -280,14 +274,6 @@ public class Maze implements Serializable {
         return entrance;
     }
 
-    /**
-     * Returns the exit room
-     *
-     * @return the exit
-     */
-    public Room getExit() {
-        return exit;
-    }
 
     /**
      * Returns the room at the given grid coordinates.
@@ -304,8 +290,6 @@ public class Maze implements Serializable {
     }
 
     public List<Door> getDoors() {
-        // A LinkedHashSet dedupes by identity (Door uses default equals), so
-        // each shared door — stored on both rooms it connects — is counted once.
         Set<Door> doors = new LinkedHashSet<>();
         for (int r = 0; r < SIZE; r++){
             for (int c = 0; c < SIZE; c++){
@@ -315,17 +299,6 @@ public class Maze implements Serializable {
         return new ArrayList<>(doors);
     }
 
-    /**
-     * Returns a shallow defensive copy of the room grid so callers cannot
-     * replace or null out cells.
-     *
-     * @return a copied Room[][] of size SIZE × SIZE
-     */
-    public Room[][] getGrid() {
-        Room[][] copy = new Room[SIZE][SIZE];
-        for (int r = 0; r < SIZE; r++) copy[r] = Arrays.copyOf(grid[r], SIZE);
-        return copy;
-    }
 
     /**
      * @return true while the game is in progress;
@@ -333,22 +306,6 @@ public class Maze implements Serializable {
      */
     public boolean isRunning() {
         return running;
-    }
-
-    /**
-     * @return true if BFS has confirmed at least one open path
-     *         from the player's current room to the exit;
-     *         false if the player is permanently trapped
-     */
-    public boolean isPossible() {
-        return possible;
-    }
-
-    /**
-     * @return true if the player has reached the exit room
-     */
-    public boolean isWon() {
-        return won;
     }
 
     /**
@@ -362,17 +319,4 @@ public class Maze implements Serializable {
     }
 
 
-    public void setPossible(boolean possible) {
-        this.possible = possible;
-    }
-
-    /**
-     * Marks the game as won. Called by the controller when the player
-     * successfully enters the exit room.
-     *
-     * @param won true to record a player victory
-     */
-    public void setWon(boolean won) {
-        this.won = won;
-    }
 }

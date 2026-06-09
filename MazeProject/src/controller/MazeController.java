@@ -41,28 +41,20 @@ public class MazeController{
             }
         });
     }
-    public void attachButtonListeners(JButton north, JButton east, JButton south, JButton west) {
-        if (north != null) north.addActionListener(e -> move(Direction.NORTH));
-        if (east != null) east.addActionListener(e -> move(Direction.EAST));
-        if (south != null) south.addActionListener(e -> move(Direction.SOUTH));
-        if (west != null) west.addActionListener(e -> move(Direction.WEST));
-    }
+
     public void move(Direction direction) {
         if (!maze.isRunning()) return;
 
         Door door = currentRoom.getDoor(direction.ordinal());
 
-        // No door, or a door permanently blocked by a wrong answer: can't pass.
         if (door == null || door.isBlocked()) {
             listener.onInvalidMove(direction);
             return;
         }
-        // Already answered correctly: walk straight through.
         if (door.isOpen()) {
             advancePlayer(door);
             return;
         }
-        // Unanswered: prompt the player with this door's question.
         listener.onDoorAttempt(door, false);
     }
 
@@ -96,7 +88,6 @@ public class MazeController{
         listener.onPlayerMoved(currentRoom);
 
         if (currentRoom.isExit()) {
-            maze.setWon(true);
             maze.setRunning(false);
             listener.onGameWon();
         }

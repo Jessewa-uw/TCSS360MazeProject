@@ -97,8 +97,6 @@ public class GameWindow extends JFrame {
         myCards.show(myRoot, GAME);
         myRoot.revalidate();
         myRoot.repaint();
-        // Focus must be requested after the card is actually showing, or key
-        // input silently goes nowhere.
         SwingUtilities.invokeLater(myGamePanel::focusGame);
     }
 }
