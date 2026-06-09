@@ -109,17 +109,17 @@ public class QuestionPanel extends JPanel {
     /**
      * Populates panel with one button per choice, where only one button
      * can be selected
-     * @param inputs panel to add the buttons to
-     * @param choices list of answer options
+     * @param theInputs panel to add the buttons to
+     * @param theChoices list of answer options
      */
-    private void addChoices(JPanel inputs, List<String> choices) {
-        for (String choice : choices) {
+    private void addChoices(JPanel theInputs, List<String> theChoices) {
+        for (String choice : theChoices) {
             JRadioButton rb = new JRadioButton(choice);
             rb.setOpaque(false);
             rb.setActionCommand(choice);
             rb.setAlignmentX(Component.LEFT_ALIGNMENT);
             myChoices.add(rb);
-            inputs.add(rb);
+            theInputs.add(rb);
         }
     }
 
@@ -139,10 +139,10 @@ public class QuestionPanel extends JPanel {
 
     /**
      * Escapes the characters that carry special meaning in HTML
-     * @param s raw string to escape
+     * @param theS raw string to escape
      * @return a new string with HTML equivalents
      */
-    private static String escape(String s) {
-        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    private static String escape(String theS) {
+        return theS.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 }

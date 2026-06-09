@@ -32,45 +32,45 @@ public class MazeController{
 
     /**
      * Invoked when the game ends in defeat: no path
-      * @param reason Description of why the game ended
+      * @param theReason Description of why the game ended
      */
-    void onGameOver(String reason);
+    void onGameOver(String theReason);
 
     /**
      * Invoked when the player attempts to move in a direction that is blocked
-      * @param direction the direction the player tried to move in
+      * @param theDirection the direction the player tried to move in
      */
-    void onInvalidMove(Direction direction);
+    void onInvalidMove(Direction theDirection);
 
     /**
      * Invoked when the player reaches a locked door and an answer is attempted
-      * @param door the attempted door
-     * @param correct if the answer to the question was correct or not
+      * @param theDoor the attempted door
+     * @param theCorrect if the answer to the question was correct or not
      */
-    void onDoorAttempt(Door door, boolean correct);
+    void onDoorAttempt(Door theDoor, boolean theCorrect);
     }
-    private final Maze maze;
-    private Room currentRoom;
-    private final MazeControllerListener listener;
+    private final Maze myMaze;
+    private Room myCurrentRoom;
+    private final MazeControllerListener myListener;
 
     /**
      * Constructs a new MazeController and places the player at the maze entrance
-     * @param maze the maze model to control
-     * @param listener the event listener that will receive game state callbacks
+     * @param theMaze the maze model to control
+     * @param theListener the event listener that will receive game state callbacks
      */
-    public MazeController(Maze maze, MazeControllerListener listener) {
-        this.maze = maze;
-        this.listener = listener;
-        this.currentRoom = maze.getEntrance();
+    public MazeController(Maze theMaze, MazeControllerListener theListener) {
+        this.myMaze = theMaze;
+        this.myListener = theListener;
+        this.myCurrentRoom = theMaze.getEntrance();
     }
 
     /**
      * Registers a KeyAdapter on the given Swing component that maps
      * WASD and arrow keys to the four cardinal Directions
-     * @param component the Swing component to attach key listener to
+     * @param theComponent the Swing component to attach key listener to
      */
-    public void attachKeyListener(JComponent component) {
-        component.addKeyListener(new KeyAdapter() {
+    public void attachKeyListener(JComponent theComponent) {
+        theComponent.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 int code = e.getKeyCode();
@@ -84,42 +84,42 @@ public class MazeController{
 
     /**
      * Attempts to move player a single step in the given direction
-     * @param direction the cardinal direction to move toward
+     * @param theDirection the cardinal direction to move toward
      */
-    public void move(Direction direction) {
-        if (!maze.isRunning()) return;
+    public void move(Direction theDirection) {
+        if (!myMaze.isRunning()) return;
 
-        Door door = currentRoom.getDoor(direction.ordinal());
+        Door door = myCurrentRoom.getDoor(theDirection.ordinal());
 
         if (door == null || door.isBlocked()) {
-            listener.onInvalidMove(direction);
+            myListener.onInvalidMove(theDirection);
             return;
         }
         if (door.isOpen()) {
             advancePlayer(door);
             return;
         }
-        listener.onDoorAttempt(door, false);
+        myListener.onDoorAttempt(door, false);
     }
 
     /**
      * Unlocks the given door and advances the player through when
      * a correct answer is given
-     * @param door the door whose question was answered correctly
+     * @param theDoor the door whose question was answered correctly
      */
-    public void submitCorrectAnswer(Door door) {
-        door.unlock();
-        advancePlayer(door);
+    public void submitCorrectAnswer(Door theDoor) {
+        theDoor.unlock();
+        advancePlayer(theDoor);
     }
 
     /**
      * Handles a wrong answer when attempting to unlock the door
-     * @param door the door whose question was answered incorrectly
+     * @param theDoor the door whose question was answered incorrectly
      */
-    public void submitWrongAnswer(Door door) {
-        if (!maze.checkPossible(currentRoom)) {
-            maze.setRunning(false);
-            listener.onGameOver("No path remains... You are trapped!");
+    public void submitWrongAnswer(Door theDoor) {
+        if (!myMaze.checkPossible(myCurrentRoom)) {
+            myMaze.setRunning(false);
+            myListener.onGameOver("No path remains... You are trapped!");
         }
     }
 
@@ -127,28 +127,28 @@ public class MazeController{
      * Returns the room the player is currently in
      * @return the current Room
      */
-    public Room getCurrentRoom() {
-        return currentRoom;
+    public Room getMyCurrentRoom() {
+        return myCurrentRoom;
     }
 
     /**
      * Places the player in the given room. Used when restoring a saved game so
      * the player resumes where they left off rather than at the entrance.
      *
-     * @param room the room to start in
+     * @param theRoom the room to start in
      */
-    public void setCurrentRoom(Room room) {
-        currentRoom = room;
+    public void setMyCurrentRoom(Room theRoom) {
+        myCurrentRoom = theRoom;
     }
-    private void advancePlayer(Door door) {
-        currentRoom = door.getMyDestination().equals(currentRoom)
-                ? door.getMyOrigin()
-                : door.getMyDestination();
-        listener.onPlayerMoved(currentRoom);
+    private void advancePlayer(Door theDoor) {
+        myCurrentRoom = theDoor.getMyDestination().equals(myCurrentRoom)
+                ? theDoor.getMyOrigin()
+                : theDoor.getMyDestination();
+        myListener.onPlayerMoved(myCurrentRoom);
 
-        if (currentRoom.isExit()) {
-            maze.setRunning(false);
-            listener.onGameWon();
+        if (myCurrentRoom.isExit()) {
+            myMaze.setRunning(false);
+            myListener.onGameWon();
         }
     }
 }

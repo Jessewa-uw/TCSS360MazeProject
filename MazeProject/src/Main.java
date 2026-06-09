@@ -8,9 +8,9 @@ import javax.swing.SwingUtilities;
 public class Main {
     /**
      * Launches the application
-     * @param args command line arguments
+     * @param theArgs command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] theArgs) {
         SwingUtilities.invokeLater(() -> {
             GameWindow window = new GameWindow();
             window.setVisible(true);

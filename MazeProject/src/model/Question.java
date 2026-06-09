@@ -22,7 +22,7 @@ public abstract class Question implements Serializable {
     /**
      * ID for the database table
      */
-    protected final int id;
+    protected final int myID;
 
     /**
      * Constructs a question with a prompt, correct answer, and database ID
@@ -33,7 +33,7 @@ public abstract class Question implements Serializable {
     public Question(String thePrompt, String theAnswer, int theID) {
         this.myPrompt = thePrompt;
         this.myAnswer = theAnswer;
-        this.id = theID;
+        this.myID = theID;
     }
 
     /**
@@ -46,10 +46,10 @@ public abstract class Question implements Serializable {
 
     /**
      * Returns true if the guessed answer matches the correct answer
-     * @param userAnswer the answer guessed by player
+     * @param theUserAnswer the answer guessed by player
      * @return true if guessed answer matches stored answer
      */
-    public boolean checkAnswer(String userAnswer){ return myAnswer.equals(userAnswer); }
+    public boolean checkAnswer(String theUserAnswer){ return myAnswer.equals(theUserAnswer); }
 
     /**
      * Returns a label giving the type of question

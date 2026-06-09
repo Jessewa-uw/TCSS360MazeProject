@@ -17,12 +17,12 @@ public class MazeGUI2D extends JPanel {
     public static final int DEFAULT_ROOM_SIZE = 200;
 
     private final Maze myMaze;
-    private Room currentRoom;
+    private Room myCurrentRoom;
 
-    private final int roomSize;
-    private final int gap;
-    private final int doorWidth;
-    private final int doorHeight;
+    private final int myRoomSize;
+    private final int myGap;
+    private final int myDoorWidth;
+    private final int myDoorHeight;
 
     /** Builds a full-size map. */
     public MazeGUI2D(Maze theMaze) {
@@ -38,23 +38,23 @@ public class MazeGUI2D extends JPanel {
      */
     public MazeGUI2D(Maze theMaze, int theRoomSize) {
         myMaze = theMaze;
-        currentRoom = myMaze.getEntrance();
+        myCurrentRoom = myMaze.getEntrance();
 
-        roomSize = theRoomSize;
-        gap = roomSize / 3;
-        doorWidth = gap;
-        doorHeight = Math.max(3, roomSize / 33);
+        myRoomSize = theRoomSize;
+        myGap = myRoomSize / 3;
+        myDoorWidth = myGap;
+        myDoorHeight = Math.max(3, myRoomSize / 33);
 
-        setPreferredSize(new Dimension(Maze.SIZE * roomSize, Maze.SIZE * roomSize));
+        setPreferredSize(new Dimension(Maze.SIZE * myRoomSize, Maze.SIZE * myRoomSize));
     }
 
     /**
      * Highlights the given room as the player's location and repaints.
      *
-     * @param room the room the player now occupies
+     * @param theRoom the room the player now occupies
      */
-    public void setCurrentRoom(Room room) {
-        currentRoom = room;
+    public void setCurrentRoom(Room theRoom) {
+        myCurrentRoom = theRoom;
         repaint();
     }
 
@@ -70,116 +70,116 @@ public class MazeGUI2D extends JPanel {
         for (int r = 0; r < Maze.SIZE; r++) {
             for (int c = 0; c < Maze.SIZE; c++) {
                 Room room = myMaze.getRoom(r, c);
-                drawRoom(g2d, room, c * roomSize, r * roomSize);
+                drawRoom(g2d, room, c * myRoomSize, r * myRoomSize);
             }
         }
     }
 
     /**
      * Draws a single room cell at the given pixel coordinates
-     * @param g 2D graphics content
-     * @param room room to draw
-     * @param x pixel x coordinate of rooms top left corner
-     * @param y pixel y coordinate of rooms top left corner
+     * @param theG 2D graphics content
+     * @param theRoom room to draw
+     * @param theX pixel x coordinate of rooms top left corner
+     * @param theY pixel y coordinate of rooms top left corner
      */
-    private void drawRoom(Graphics2D g, Room room, int x, int y) {
-        g.setStroke(new BasicStroke(Math.max(1, roomSize / 50)));
+    private void drawRoom(Graphics2D theG, Room theRoom, int theX, int theY) {
+        theG.setStroke(new BasicStroke(Math.max(1, myRoomSize / 50)));
 
-        if (room.isEntrance()) {
-            g.setColor(Color.GREEN);
-        } else if (room.isExit()) {
-            g.setColor(Color.RED);
+        if (theRoom.isEntrance()) {
+            theG.setColor(Color.GREEN);
+        } else if (theRoom.isExit()) {
+            theG.setColor(Color.RED);
         } else {
-            g.setColor(Color.BLACK);
+            theG.setColor(Color.BLACK);
         }
-        g.fillRect(x, y, roomSize, roomSize);
+        theG.fillRect(theX, theY, myRoomSize, myRoomSize);
 
-        drawNorth(g, room, x, y);
-        drawSouth(g, room, x, y);
-        drawEast(g, room, x, y);
-        drawWest(g, room, x, y);
+        drawNorth(theG, theRoom, theX, theY);
+        drawSouth(theG, theRoom, theX, theY);
+        drawEast(theG, theRoom, theX, theY);
+        drawWest(theG, theRoom, theX, theY);
 
-        if (room == currentRoom) {
-            int oval = roomSize / 3;
-            int off = (roomSize - oval) / 2;
-            g.setColor(Color.BLUE);
-            g.fillOval(x + off, y + off, oval, oval);
+        if (theRoom == myCurrentRoom) {
+            int oval = myRoomSize / 3;
+            int off = (myRoomSize - oval) / 2;
+            theG.setColor(Color.BLUE);
+            theG.fillOval(theX + off, theY + off, oval, oval);
         }
     }
 
     /**
      * Draws the north wall of the room
-     * @param g 2D graphics content
-     * @param room room to draw
-     * @param x pixel x coordinate of rooms top left corner
-     * @param y pixel y coordinate of rooms top left corner
+     * @param theG 2D graphics content
+     * @param theRoom room to draw
+     * @param theX pixel x coordinate of rooms top left corner
+     * @param theY pixel y coordinate of rooms top left corner
      */
-    private void drawNorth(Graphics2D g, Room room, int x, int y) {
-        g.setColor(Color.BLACK);
-        if (room.getDoor(Direction.NORTH.ordinal()) == null) {
-            g.drawLine(x, y, x + roomSize, y);
+    private void drawNorth(Graphics2D theG, Room theRoom, int theX, int theY) {
+        theG.setColor(Color.BLACK);
+        if (theRoom.getDoor(Direction.NORTH.ordinal()) == null) {
+            theG.drawLine(theX, theY, theX + myRoomSize, theY);
         } else {
-            g.drawLine(x, y, x + gap, y);
-            g.drawLine(x + roomSize - gap, y, x + roomSize, y);
-            g.setColor(new Color(51, 27, 27));
-            g.fillRect(x + (roomSize - doorWidth) / 2, y - doorHeight / 2, doorWidth, doorHeight);
+            theG.drawLine(theX, theY, theX + myGap, theY);
+            theG.drawLine(theX + myRoomSize - myGap, theY, theX + myRoomSize, theY);
+            theG.setColor(new Color(51, 27, 27));
+            theG.fillRect(theX + (myRoomSize - myDoorWidth) / 2, theY - myDoorHeight / 2, myDoorWidth, myDoorHeight);
         }
     }
 
     /**
      * Draws south wall of the room
-     * @param g 2D graphics content
-     * @param room room to draw
-     * @param x pixel x coordinate of rooms top left corner
-     * @param y pixel y coordinate of rooms top left corner
+     * @param theG 2D graphics content
+     * @param theRoom room to draw
+     * @param theX pixel x coordinate of rooms top left corner
+     * @param theY pixel y coordinate of rooms top left corner
      */
-    private void drawSouth(Graphics2D g, Room room, int x, int y) {
-        g.setColor(Color.BLACK);
-        if (room.getDoor(Direction.SOUTH.ordinal()) == null) {
-            g.drawLine(x, y + roomSize, x + roomSize, y + roomSize);
+    private void drawSouth(Graphics2D theG, Room theRoom, int theX, int theY) {
+        theG.setColor(Color.BLACK);
+        if (theRoom.getDoor(Direction.SOUTH.ordinal()) == null) {
+            theG.drawLine(theX, theY + myRoomSize, theX + myRoomSize, theY + myRoomSize);
         } else {
-            g.drawLine(x, y + roomSize, x + gap, y + roomSize);
-            g.drawLine(x + roomSize - gap, y + roomSize, x + roomSize, y + roomSize);
-            g.setColor(new Color(51, 27, 27));
-            g.fillRect(x + (roomSize - doorWidth) / 2, y + roomSize - doorHeight / 2, doorWidth, doorHeight);
+            theG.drawLine(theX, theY + myRoomSize, theX + myGap, theY + myRoomSize);
+            theG.drawLine(theX + myRoomSize - myGap, theY + myRoomSize, theX + myRoomSize, theY + myRoomSize);
+            theG.setColor(new Color(51, 27, 27));
+            theG.fillRect(theX + (myRoomSize - myDoorWidth) / 2, theY + myRoomSize - myDoorHeight / 2, myDoorWidth, myDoorHeight);
         }
     }
 
     /**
      * Draws the west wall of the room
-     * @param g 2D graphics content
-     * @param room room to draw
-     * @param x pixel x coordinate of rooms top left corner
-     * @param y pixel y coordinate of rooms top left corner
+     * @param theG 2D graphics content
+     * @param theRoom room to draw
+     * @param theX pixel x coordinate of rooms top left corner
+     * @param theY pixel y coordinate of rooms top left corner
      */
-    private void drawWest(Graphics2D g, Room room, int x, int y) {
-        g.setColor(Color.BLACK);
-        if (room.getDoor(Direction.WEST.ordinal()) == null) {
-            g.drawLine(x, y, x, y + roomSize);
+    private void drawWest(Graphics2D theG, Room theRoom, int theX, int theY) {
+        theG.setColor(Color.BLACK);
+        if (theRoom.getDoor(Direction.WEST.ordinal()) == null) {
+            theG.drawLine(theX, theY, theX, theY + myRoomSize);
         } else {
-            g.drawLine(x, y, x, y + gap);
-            g.drawLine(x, y + roomSize - gap, x, y + roomSize);
-            g.setColor(new Color(51, 27, 27));
-            g.fillRect(x - doorHeight / 2, y + (roomSize - gap) / 2, doorHeight, gap);
+            theG.drawLine(theX, theY, theX, theY + myGap);
+            theG.drawLine(theX, theY + myRoomSize - myGap, theX, theY + myRoomSize);
+            theG.setColor(new Color(51, 27, 27));
+            theG.fillRect(theX - myDoorHeight / 2, theY + (myRoomSize - myGap) / 2, myDoorHeight, myGap);
         }
     }
 
     /**
      * Draws east wall of the room
-     * @param g 2D graphics content
-     * @param room room to draw
-     * @param x pixel x coordinate of rooms top left corner
-     * @param y pixel y coordinate of rooms top left corner
+     * @param theG 2D graphics content
+     * @param theRoom room to draw
+     * @param theX pixel x coordinate of rooms top left corner
+     * @param theY pixel y coordinate of rooms top left corner
      */
-    private void drawEast(Graphics2D g, Room room, int x, int y) {
-        g.setColor(Color.BLACK);
-        if (room.getDoor(Direction.EAST.ordinal()) == null) {
-            g.drawLine(x + roomSize, y, x + roomSize, y + roomSize);
+    private void drawEast(Graphics2D theG, Room theRoom, int theX, int theY) {
+        theG.setColor(Color.BLACK);
+        if (theRoom.getDoor(Direction.EAST.ordinal()) == null) {
+            theG.drawLine(theX + myRoomSize, theY, theX + myRoomSize, theY + myRoomSize);
         } else {
-            g.drawLine(x + roomSize, y, x + roomSize, y + gap);
-            g.drawLine(x + roomSize, y + roomSize - gap, x + roomSize, y + roomSize);
-            g.setColor(new Color(51, 27, 27));
-            g.fillRect(x + roomSize - doorHeight / 2, y + (roomSize - gap) / 2, doorHeight, gap);
+            theG.drawLine(theX + myRoomSize, theY, theX + myRoomSize, theY + myGap);
+            theG.drawLine(theX + myRoomSize, theY + myRoomSize - myGap, theX + myRoomSize, theY + myRoomSize);
+            theG.setColor(new Color(51, 27, 27));
+            theG.fillRect(theX + myRoomSize - myDoorHeight / 2, theY + (myRoomSize - myGap) / 2, myDoorHeight, myGap);
         }
     }
 }

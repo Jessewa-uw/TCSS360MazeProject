@@ -76,14 +76,14 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
         myMinimap.setCurrentRoom(theStartRoom);
         myRoomView = new RoomView(theStartRoom);
         myController = new MazeController(theMaze, this);
-        myController.setCurrentRoom(theStartRoom);
+        myController.setMyCurrentRoom(theStartRoom);
         myController.attachKeyListener(myRoomView);
 
         add(buildHud(theWindow), BorderLayout.NORTH);
         add(myRoomView, BorderLayout.CENTER);
         add(buildCorner(), BorderLayout.EAST);
 
-        updateStatus(myController.getCurrentRoom());
+        updateStatus(myController.getMyCurrentRoom());
     }
 
     /** Requests keyboard focus for the room view so movement keys are received. */
@@ -117,41 +117,41 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
 
     /**
      * Invoked when the game ends in defeat
-     * @param reason Description of why the game ended
+     * @param theReason Description of why the game ended
      */
     @Override
-    public void onGameOver(String reason) {
+    public void onGameOver(String theReason) {
         showMap();
         JOptionPane.showMessageDialog(this,
-                reason, "Game Over", JOptionPane.WARNING_MESSAGE);
+                theReason, "Game Over", JOptionPane.WARNING_MESSAGE);
     }
 
     /**
      * Invoked when the player attempts to move in a direction with no
      * usable door
-     * @param direction the direction the player tried to move in
+     * @param theDirection the direction the player tried to move in
      */
     @Override
-    public void onInvalidMove(Direction direction) {
+    public void onInvalidMove(Direction theDirection) {
         // No usable door that way — audible feedback, stay put.
         Toolkit.getDefaultToolkit().beep();
     }
 
     /**
      * Invoked when player reaches a locked door
-     * @param door the attempted door
-     * @param correct if the answer to the question was correct or not
+     * @param theDoor the attempted door
+     * @param theCorrect if the answer to the question was correct or not
      */
     @Override
-    public void onDoorAttempt(Door door, boolean correct) {
-        Question question = door.getMyQuestion();
+    public void onDoorAttempt(Door theDoor, boolean theCorrect) {
+        Question question = theDoor.getMyQuestion();
         if (question == null) {
             // No question guarding this door — walk straight through.
-            myController.submitCorrectAnswer(door);
+            myController.submitCorrectAnswer(theDoor);
             return;
         }
         QuestionPanel panel = new QuestionPanel(question,
-                answer -> handleAnswer(door, answer),
+                answer -> handleAnswer(theDoor, answer),
                 this::handleCancel);
         myQuestionHolder.removeAll();
         myQuestionHolder.add(panel, BorderLayout.CENTER);
@@ -192,7 +192,7 @@ public class GamePanel extends JPanel implements MazeController.MazeControllerLi
     /** Writes the current game (maze progress + position) to the save slot. */
     private void saveGame() {
         try {
-            SaveManager.save(new GameState(myMaze, myController.getCurrentRoom()));
+            SaveManager.save(new GameState(myMaze, myController.getMyCurrentRoom()));
             JOptionPane.showMessageDialog(this,
                     "Game saved.", "Save", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {

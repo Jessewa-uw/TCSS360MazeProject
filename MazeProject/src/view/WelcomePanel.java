@@ -52,11 +52,11 @@ public class WelcomePanel extends JPanel {
 
     /**
      * Creates uniformly sized buttons for use in the welcome screen
-     * @param text label to display on button
+     * @param theText label to display on button
      * @return configures button ready for action listener
      */
-    private static JButton makeButton(String text) {
-        JButton button = new JButton(text);
+    private static JButton makeButton(String theText) {
+        JButton button = new JButton(theText);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setMaximumSize(new Dimension(200, 40));
         button.setPreferredSize(new Dimension(200, 40));

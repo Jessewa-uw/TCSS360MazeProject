@@ -88,11 +88,11 @@ public class GameWindow extends JFrame {
     }
 
     /** Replaces the active game card and brings it to the front, focused. */
-    private void swapInGamePanel(GamePanel panel) {
+    private void swapInGamePanel(GamePanel thePanel) {
         if (myGamePanel != null) {
             myRoot.remove(myGamePanel);
         }
-        myGamePanel = panel;
+        myGamePanel = thePanel;
         myRoot.add(myGamePanel, GAME);
         myCards.show(myRoot, GAME);
         myRoot.revalidate();

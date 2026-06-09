@@ -34,13 +34,13 @@ public class Door implements Serializable {
     /**
     Constructs a Door object with two parameters.
 
-     @param origin starting room
-     @param destination destination room
+     @param theOrigin starting room
+     @param theDestination destination room
 
     **/
-    public Door(Room origin, Room destination) {
-        myOrigin = origin;
-        myDestination = destination;
+    public Door(Room theOrigin, Room theDestination) {
+        myOrigin = theOrigin;
+        myDestination = theDestination;
     }
 
     /**
@@ -99,19 +99,19 @@ public class Door implements Serializable {
     /**
      * Returns the room on the other side of this door from the given room.
      *
-     * @param from the room the player is currently in
+     * @param theFrom the room the player is currently in
      * @return the room on the other side
      */
-    public Room getOtherSide(Room from) {
-        return from.equals(myOrigin) ? myDestination : myOrigin;
+    public Room getOtherSide(Room theFrom) {
+        return theFrom.equals(myOrigin) ? myDestination : myOrigin;
     }
 
     /**
      * Assigns the question the player must answer to unlock the door
-     * @param myQuestion the question to be attached to the door
+     * @param theQuestion the question to be attached to the door
      */
-    public void setMyQuestion(Question myQuestion) {
-        this.myQuestion = myQuestion;
+    public void setMyQuestion(Question theQuestion) {
+        this.myQuestion = theQuestion;
     }
 
     /**

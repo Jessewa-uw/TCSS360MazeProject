@@ -19,12 +19,12 @@ public class SAQuestion extends Question {
 
     /**
      * Returns true if the guessed answer matches the correct answer
-     * @param userAnswer the answer guessed by player
+     * @param theUserAnswer the answer guessed by player
      * @return true if the answer matches
      */
     @Override
-    public boolean checkAnswer(String userAnswer) {
-        return myAnswer.equalsIgnoreCase(userAnswer.trim());
+    public boolean checkAnswer(String theUserAnswer) {
+        return myAnswer.equalsIgnoreCase(theUserAnswer.trim());
     }
 
     /**

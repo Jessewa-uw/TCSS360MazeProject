@@ -29,13 +29,13 @@ public final class SaveManager {
     /**
      * Writes the given game state to the save slot, overwriting any prior save.
      *
-     * @param state the snapshot to persist
+     * @param myState the snapshot to persist
      * @throws IOException if writing fails
      */
-    public static void save(GameState state) throws IOException {
+    public static void save(GameState myState) throws IOException {
         try (ObjectOutputStream out =
                      new ObjectOutputStream(new FileOutputStream(SAVE_FILE))) {
-            out.writeObject(state);
+            out.writeObject(myState);
         }
     }
 

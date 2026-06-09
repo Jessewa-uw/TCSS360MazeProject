@@ -31,12 +31,12 @@ public class Room implements Serializable {
 
     /**
      * Constructs a room at given grid position with no doors
-     * @param row the row index of the room
-     * @param col the column index of the room
+     * @param theRow the row index of the room
+     * @param theCol the column index of the room
      */
-    public Room(int row, int col) {
-        myRow = row;
-        myCol = col;
+    public Room(int theRow, int theCol) {
+        myRow = theRow;
+        myCol = theCol;
     }
 
     /**
@@ -55,11 +55,11 @@ public class Room implements Serializable {
 
     /**
      * Returns door on corresponding wall
-     * @param dir ordinal direction
+     * @param theDir ordinal direction
      * @return the Door on that wall
      */
-    public Door getDoor(int dir){
-        return myDoors[dir];
+    public Door getDoor(int theDir){
+        return myDoors[theDir];
     }
 
     /**
@@ -94,11 +94,11 @@ public class Room implements Serializable {
 
     /**
      * Places a door on the wall corresponding to given direction
-     * @param dir the ordinal direction
-     * @param door door to place
+     * @param theDir the ordinal direction
+     * @param theDoor door to place
      */
-    public void setDoor(int dir, Door door){
-        myDoors[dir] = door;
+    public void setDoor(int theDir, Door theDoor){
+        myDoors[theDir] = theDoor;
     }
 
     /**

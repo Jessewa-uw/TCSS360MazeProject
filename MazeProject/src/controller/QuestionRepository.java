@@ -66,15 +66,15 @@ public final class QuestionRepository {
 
     /**
      * Gets all rows from the table and groups them by question id
-     * @param conn a database connection
+     * @param theConn a database connection
      * @return map to the ordered list of options for the question
      * @throws SQLException if the table cannot be reached
      */
-    private Map<Integer, List<String>> loadOptions(Connection conn) throws SQLException {
+    private Map<Integer, List<String>> loadOptions(Connection theConn) throws SQLException {
         Map<Integer, List<String>> result = new HashMap<>();
         String sql = "SELECT Question_id, Option_Text FROM options";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql);
+        try (PreparedStatement ps = theConn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {

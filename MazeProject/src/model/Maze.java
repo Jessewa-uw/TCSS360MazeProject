@@ -27,11 +27,11 @@ public class Maze implements Serializable {
      */
     private static final double DOOR_PROBABILITY = 0.5;
 
-    private final Room[][] grid;
+    private final Room[][] myGrid;
 
-    private final Room entrance;
+    private final Room myEntrance;
 
-    private boolean running;
+    private boolean myRunning;
 
 
     /**
@@ -40,13 +40,13 @@ public class Maze implements Serializable {
      * with multiple possible paths from entrance to exit.
      */
     public Maze() throws SQLException {
-        grid = new Room[SIZE][SIZE];
+        myGrid = new Room[SIZE][SIZE];
         allocateRooms();
         generateMaze();
         new QuestionAssigner(getDoors());
 
-        entrance = grid[0][0];
-        running  = true;
+        myEntrance = myGrid[0][0];
+        myRunning = true;
 
     }
 
@@ -58,11 +58,11 @@ public class Maze implements Serializable {
     private void allocateRooms() {
         for (int r = 0; r < SIZE; r++) {
             for (int c = 0; c < SIZE; c++) {
-                grid[r][c] = new Room(r, c);
+                myGrid[r][c] = new Room(r, c);
             }
         }
-        grid[0][0].setEntrance();
-        grid[SIZE - 1][SIZE - 1].setExit();
+        myGrid[0][0].setEntrance();
+        myGrid[SIZE - 1][SIZE - 1].setExit();
     }
 
     /**
@@ -87,26 +87,26 @@ public class Maze implements Serializable {
     /**
      * Opens a shared Door between two adjacent rooms, visible from both sides.
      *
-     * @param r1 row of the first room
-     * @param c1 column of the first room
-     * @param r2 row of the second room
-     * @param c2 column of the second room
+     * @param theRow1 row of the first room
+     * @param theColumn1 column of the first room
+     * @param theRow2 row of the second room
+     * @param theColumn2 column of the second room
      */
-    private void createDoor(int r1, int c1, int r2, int c2) {
-        Door door = new Door(getRoom(r1, c1), getRoom(r2, c2));
+    private void createDoor(int theRow1, int theColumn1, int theRow2, int theColumn2) {
+        Door door = new Door(getRoom(theRow1, theColumn1), getRoom(theRow2, theColumn2));
 
-        if (r2 == r1 - 1) {
-            grid[r1][c1].setDoor(Direction.NORTH.ordinal(), door);
-            grid[r2][c2].setDoor(Direction.SOUTH.ordinal(), door);
-        } else if (r2 == r1 + 1) {
-            grid[r1][c1].setDoor(Direction.SOUTH.ordinal(), door);
-            grid[r2][c2].setDoor(Direction.NORTH.ordinal(), door);
-        } else if (c2 == c1 - 1) {
-            grid[r1][c1].setDoor(Direction.WEST.ordinal(), door);
-            grid[r2][c2].setDoor(Direction.EAST.ordinal(), door);
+        if (theRow2 == theRow1 - 1) {
+            myGrid[theRow1][theColumn1].setDoor(Direction.NORTH.ordinal(), door);
+            myGrid[theRow2][theColumn2].setDoor(Direction.SOUTH.ordinal(), door);
+        } else if (theRow2 == theRow1 + 1) {
+            myGrid[theRow1][theColumn1].setDoor(Direction.SOUTH.ordinal(), door);
+            myGrid[theRow2][theColumn2].setDoor(Direction.NORTH.ordinal(), door);
+        } else if (theColumn2 == theColumn1 - 1) {
+            myGrid[theRow1][theColumn1].setDoor(Direction.WEST.ordinal(), door);
+            myGrid[theRow2][theColumn2].setDoor(Direction.EAST.ordinal(), door);
         } else {
-            grid[r1][c1].setDoor(Direction.EAST.ordinal(), door);
-            grid[r2][c2].setDoor(Direction.WEST.ordinal(), door);
+            myGrid[theRow1][theColumn1].setDoor(Direction.EAST.ordinal(), door);
+            myGrid[theRow2][theColumn2].setDoor(Direction.WEST.ordinal(), door);
         }
     }
 
@@ -114,9 +114,9 @@ public class Maze implements Serializable {
      * Ensures every room is reachable from the entrance, opening a random
      * door into any isolated room found by BFS.
      *
-     * @param rng shared Random instance
+     * @param theRandom shared Random instance
      */
-    private void ensureConnected(Random rng) {
+    private void ensureConnected(Random theRandom) {
         boolean[][] reached = bfsReachable();
 
         boolean progress = true;
@@ -124,7 +124,7 @@ public class Maze implements Serializable {
             progress = false;
             for (int r = 0; r < SIZE; r++) {
                 for (int c = 0; c < SIZE; c++) {
-                    if (!reached[r][c] && connectToReachedNeighbor(r, c, reached, rng)) {
+                    if (!reached[r][c] && connectToReachedNeighbor(r, c, reached, theRandom)) {
                         reached = bfsReachable();
                         progress = true;
                     }
@@ -146,17 +146,17 @@ public class Maze implements Serializable {
         Queue<Room> queue = new LinkedList<>();
 
         reached[0][0] = true;
-        queue.add(grid[0][0]);
+        queue.add(myGrid[0][0]);
 
         while (!queue.isEmpty()) {
             Room room = queue.poll();
             int r = room.getRow();
             int c = room.getCol();
 
-            if (r > 0        && !isWall(r, c, Direction.NORTH.ordinal()) && !reached[r-1][c]) { reached[r-1][c] = true; queue.add(grid[r-1][c]); }
-            if (r < SIZE - 1 && !isWall(r, c, Direction.SOUTH.ordinal()) && !reached[r+1][c]) { reached[r+1][c] = true; queue.add(grid[r+1][c]); }
-            if (c > 0        && !isWall(r, c, Direction.WEST.ordinal())  && !reached[r][c-1]) { reached[r][c-1] = true; queue.add(grid[r][c-1]); }
-            if (c < SIZE - 1 && !isWall(r, c, Direction.EAST.ordinal())  && !reached[r][c+1]) { reached[r][c+1] = true; queue.add(grid[r][c+1]); }
+            if (r > 0        && !isWall(r, c, Direction.NORTH.ordinal()) && !reached[r-1][c]) { reached[r-1][c] = true; queue.add(myGrid[r-1][c]); }
+            if (r < SIZE - 1 && !isWall(r, c, Direction.SOUTH.ordinal()) && !reached[r+1][c]) { reached[r+1][c] = true; queue.add(myGrid[r+1][c]); }
+            if (c > 0        && !isWall(r, c, Direction.WEST.ordinal())  && !reached[r][c-1]) { reached[r][c-1] = true; queue.add(myGrid[r][c-1]); }
+            if (c < SIZE - 1 && !isWall(r, c, Direction.EAST.ordinal())  && !reached[r][c+1]) { reached[r][c+1] = true; queue.add(myGrid[r][c+1]); }
         }
 
         return reached;
@@ -168,13 +168,13 @@ public class Maze implements Serializable {
      * A null door means the wall was never opened during generation.
      * A blocked door means the player ran out of attempts.
      *
-     * @param r   row of the room to check
-     * @param c   column of the room to check
-     * @param dir direction of the wall to check
+     * @param theRow   row of the room to check
+     * @param theColumn   column of the room to check
+     * @param theDirection direction of the wall to check
      * @return true if the wall is solid (no door, or door is locked)
      */
-    private boolean isWall(int r, int c, int dir) {
-        Door door = grid[r][c].getDoor(dir);
+    private boolean isWall(int theRow, int theColumn, int theDirection) {
+        Door door = myGrid[theRow][theColumn].getDoor(theDirection);
         return door == null || door.isBlocked();
     }
 
@@ -183,25 +183,25 @@ public class Maze implements Serializable {
      * neighbor that is already reachable from the entrance, joining the room to
      * the entrance's connected component.
      *
-     * @param r       row of the isolated room
-     * @param c       column of the isolated room
-     * @param reached current entrance reachability grid
-     * @param rng     shared instance
+     * @param theRow       row of the isolated room
+     * @param theColumn       column of the isolated room
+     * @param theReached current entrance reachability grid
+     * @param theRandom     shared instance
      * @return true if a reachable neighbor was found and a door opened; false
      *         if no neighbor is reachable yet (retry after others connect)
      */
-    private boolean connectToReachedNeighbor(int r, int c, boolean[][] reached, Random rng) {
+    private boolean connectToReachedNeighbor(int theRow, int theColumn, boolean[][] theReached, Random theRandom) {
         List<int[]> neighbors = new ArrayList<>();
-        if (r > 0        && reached[r - 1][c]) neighbors.add(new int[]{r - 1, c});
-        if (r < SIZE - 1 && reached[r + 1][c]) neighbors.add(new int[]{r + 1, c});
-        if (c > 0        && reached[r][c - 1]) neighbors.add(new int[]{r, c - 1});
-        if (c < SIZE - 1 && reached[r][c + 1]) neighbors.add(new int[]{r, c + 1});
+        if (theRow > 0        && theReached[theRow - 1][theColumn]) neighbors.add(new int[]{theRow - 1, theColumn});
+        if (theRow < SIZE - 1 && theReached[theRow + 1][theColumn]) neighbors.add(new int[]{theRow + 1, theColumn});
+        if (theColumn > 0        && theReached[theRow][theColumn - 1]) neighbors.add(new int[]{theRow, theColumn - 1});
+        if (theColumn < SIZE - 1 && theReached[theRow][theColumn + 1]) neighbors.add(new int[]{theRow, theColumn + 1});
 
         if (neighbors.isEmpty()) {
             return false;
         }
-        int[] chosen = neighbors.get(rng.nextInt(neighbors.size()));
-        createDoor(r, c, chosen[0], chosen[1]);
+        int[] chosen = neighbors.get(theRandom.nextInt(neighbors.size()));
+        createDoor(theRow, theColumn, chosen[0], chosen[1]);
         return true;
     }
 
@@ -210,15 +210,15 @@ public class Maze implements Serializable {
      * Call after every door is locked — returns false if the player
      * is trapped and the game is over.
      *
-     * @param current the room the player is currently standing in
+     * @param theCurrent the room the player is currently standing in
      * @return true if the exit is reachable, false if trapped
      */
-    public boolean checkPossible(Room current) {
+    public boolean checkPossible(Room theCurrent) {
         boolean[][] visited = new boolean[SIZE][SIZE];
         Queue<Room> queue = new LinkedList<>();
 
-        visited[current.getRow()][current.getCol()] = true;
-        queue.add(current);
+        visited[theCurrent.getRow()][theCurrent.getCol()] = true;
+        queue.add(theCurrent);
 
         while (!queue.isEmpty()) {
             Room room = queue.poll();
@@ -237,7 +237,7 @@ public class Maze implements Serializable {
             }
         }
 
-        running  = false;
+        myRunning = false;
         return false;
     }
 
@@ -246,19 +246,19 @@ public class Maze implements Serializable {
      * an open, unlocked door. Used exclusively by checkPossible
      * to build the BFS frontier.
      *
-     * @param room the room whose open neighbors are requested
+     * @param theRoom the room whose open neighbors are requested
      * @return a list of reachable neighboring rooms,
      * may be empty if all surrounding doors are locked or absent
      */
-    private List<Room> getOpenNeighbors(Room room) {
+    private List<Room> getOpenNeighbors(Room theRoom) {
         List<Room> neighbors = new ArrayList<>();
-        int r = room.getRow();
-        int c = room.getCol();
+        int r = theRoom.getRow();
+        int c = theRoom.getCol();
 
-        if (r > 0        && !isWall(r, c, Direction.NORTH.ordinal())) neighbors.add(grid[r - 1][c]);
-        if (r < SIZE - 1 && !isWall(r, c, Direction.SOUTH.ordinal())) neighbors.add(grid[r + 1][c]);
-        if (c > 0        && !isWall(r, c, Direction.WEST.ordinal()))  neighbors.add(grid[r][c - 1]);
-        if (c < SIZE - 1 && !isWall(r, c, Direction.EAST.ordinal()))  neighbors.add(grid[r][c + 1]);
+        if (r > 0        && !isWall(r, c, Direction.NORTH.ordinal())) neighbors.add(myGrid[r - 1][c]);
+        if (r < SIZE - 1 && !isWall(r, c, Direction.SOUTH.ordinal())) neighbors.add(myGrid[r + 1][c]);
+        if (c > 0        && !isWall(r, c, Direction.WEST.ordinal()))  neighbors.add(myGrid[r][c - 1]);
+        if (c < SIZE - 1 && !isWall(r, c, Direction.EAST.ordinal()))  neighbors.add(myGrid[r][c + 1]);
 
         return neighbors;
     }
@@ -271,22 +271,22 @@ public class Maze implements Serializable {
      * @return the entrance
      */
     public Room getEntrance() {
-        return entrance;
+        return myEntrance;
     }
 
 
     /**
      * Returns the room at the given grid coordinates.
      *
-     * @param r row index
-     * @param c column index
+     * @param theRow row index
+     * @param theColumn column index
      * @return the Room at grid[r][c]
      * @throws IllegalArgumentException if r or c is out of bounds
      */
-    public Room getRoom(int r, int c) {
-        if (r < 0 || r >= SIZE || c < 0 || c >= SIZE)
-            throw new IllegalArgumentException("Room out of bounds: (" + r + ", " + c + ")");
-        return grid[r][c];
+    public Room getRoom(int theRow, int theColumn) {
+        if (theRow < 0 || theRow >= SIZE || theColumn < 0 || theColumn >= SIZE)
+            throw new IllegalArgumentException("Room out of bounds: (" + theRow + ", " + theColumn + ")");
+        return myGrid[theRow][theColumn];
     }
 
     public List<Door> getDoors() {
@@ -305,17 +305,17 @@ public class Maze implements Serializable {
      *         false after a win or a game-over condition
      */
     public boolean isRunning() {
-        return running;
+        return myRunning;
     }
 
     /**
      * Sets whether the game is currently running. Typically called by the
      * controller to halt the game loop after a win or game-over event.
      *
-     * @param running false to end the game, true to resume
+     * @param theRunning false to end the game, true to resume
      */
-    public void setRunning(boolean running) {
-        this.running = running;
+    public void setRunning(boolean theRunning) {
+        this.myRunning = theRunning;
     }
 
 

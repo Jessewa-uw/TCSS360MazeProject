@@ -64,17 +64,17 @@ public class RoomView extends JPanel {
     private static final Color BLOCKED = new Color(200, 50, 50);
     private static final Color LOCKED = new Color(150, 110, 60);
 
-    private final File assetDir = new File(ASSET_DIR);
-    private final Map<String, BufferedImage> imageCache = new HashMap<>();
+    private final File myAssetDir = new File(ASSET_DIR);
+    private final Map<String, BufferedImage> myImageCache = new HashMap<>();
 
-    private Room currentRoom;
+    private Room myCurrentRoom;
 
     /**
      * Constructs a room view display of the starting room
      * @param theStartRoom the room to initially display
      */
     public RoomView(Room theStartRoom) {
-        currentRoom = theStartRoom;
+        myCurrentRoom = theStartRoom;
         setPreferredSize(new Dimension(420, 420));
         setBackground(Color.BLACK);
         setFocusable(true);
@@ -90,10 +90,10 @@ public class RoomView extends JPanel {
     /**
      * Shows a different room (e.g. after the player moves) and repaints.
      *
-     * @param room the room to display
+     * @param theRoom the room to display
      */
-    public void setRoom(Room room) {
-        currentRoom = room;
+    public void setRoom(Room theRoom) {
+        myCurrentRoom = theRoom;
         repaint();
     }
 
@@ -114,7 +114,7 @@ public class RoomView extends JPanel {
 
         boolean drewArt = true;
         try {
-            for (String layer : layersFor(currentRoom)) {
+            for (String layer : layersFor(myCurrentRoom)) {
                 g.drawImage(load(layer), x, y, size, size, null);
             }
         } catch (RuntimeException missingAsset) {
@@ -140,14 +140,14 @@ public class RoomView extends JPanel {
      * the floor so it shows through the opening; with no south door the floor is
      * laid first and the exterior painted over it as a solid backdrop.
      */
-    private List<String> layersFor(Room room) {
+    private List<String> layersFor(Room theRoom) {
         List<String> layers = new ArrayList<>();
-        layers.add(colorOf(room) + "-walls");
+        layers.add(colorOf(theRoom) + "-walls");
 
-        Door southDoor = room.getDoor(Direction.SOUTH.ordinal());
-        Room southRoom = southDoor != null ? southDoor.getOtherSide(room) : null;
-        String exterior = (southRoom != null ? colorOf(southRoom) : colorOf(room)) + "-exterior";
-        String floor = floorOf(room);
+        Door southDoor = theRoom.getDoor(Direction.SOUTH.ordinal());
+        Room southRoom = southDoor != null ? southDoor.getOtherSide(theRoom) : null;
+        String exterior = (southRoom != null ? colorOf(southRoom) : colorOf(theRoom)) + "-exterior";
+        String floor = floorOf(theRoom);
 
         if (southDoor != null) {
             layers.add(exterior);
@@ -157,10 +157,10 @@ public class RoomView extends JPanel {
             layers.add(exterior);
         }
 
-        layers.add(layoutOf(room));
+        layers.add(layoutOf(theRoom));
 
         for (Direction d : Direction.values()) {
-            Door door = room.getDoor(d.ordinal());
+            Door door = theRoom.getDoor(d.ordinal());
             if (door == null) {
                 continue; // wall
             }
@@ -177,29 +177,29 @@ public class RoomView extends JPanel {
 
     /**
      * Returns the wall color variant name
-     * @param room the room to look up
+     * @param theRoom the room to look up
      * @return one of the colors
      */
-    private static String colorOf(Room room) {
-        return COLORS[pickIndex(room, COLOR_SALT, COLORS.length)];
+    private static String colorOf(Room theRoom) {
+        return COLORS[pickIndex(theRoom, COLOR_SALT, COLORS.length)];
     }
 
     /**
      * Returns floor texture variant name
-     * @param room the room to look up
+     * @param theRoom the room to look up
      * @return one of the floors
      */
-    private static String floorOf(Room room) {
-        return FLOORS[pickIndex(room, FLOOR_SALT, FLOORS.length)];
+    private static String floorOf(Room theRoom) {
+        return FLOORS[pickIndex(theRoom, FLOOR_SALT, FLOORS.length)];
     }
 
     /**
      * Returns layout variant
-     * @param room the room to look up
+     * @param theRoom the room to look up
      * @return one of the layouts
      */
-    private static String layoutOf(Room room) {
-        return LAYOUTS[pickIndex(room, LAYOUT_SALT, LAYOUTS.length)];
+    private static String layoutOf(Room theRoom) {
+        return LAYOUTS[pickIndex(theRoom, LAYOUT_SALT, LAYOUTS.length)];
     }
 
     /**
@@ -207,24 +207,24 @@ public class RoomView extends JPanel {
      * and a per-attribute salt, so the look is stable across repaints and
      * save/load yet decorrelated between color, floor, and layout.
      */
-    private static int pickIndex(Room room, long salt, int n) {
-        long seed = room.getRow() * 73856093L ^ room.getCol() * 19349663L ^ salt;
-        return new Random(seed).nextInt(n);
+    private static int pickIndex(Room theRoom, long theSalt, int theN) {
+        long seed = theRoom.getRow() * 73856093L ^ theRoom.getCol() * 19349663L ^ theSalt;
+        return new Random(seed).nextInt(theN);
     }
 
     /** Loads and caches one layer PNG, throwing if the file is missing. */
-    private BufferedImage load(String name) {
-        BufferedImage img = imageCache.get(name);
+    private BufferedImage load(String theName) {
+        BufferedImage img = myImageCache.get(theName);
         if (img == null) {
             try {
-                img = ImageIO.read(new File(assetDir, name + ".png"));
+                img = ImageIO.read(new File(myAssetDir, theName + ".png"));
                 if (img == null) {
                     throw new IOException("not an image");
                 }
             } catch (IOException e) {
-                throw new RuntimeException("missing layer: " + name + ".png", e);
+                throw new RuntimeException("missing layer: " + theName + ".png", e);
             }
-            imageCache.put(name, img);
+            myImageCache.put(theName, img);
         }
         return img;
     }
@@ -232,57 +232,57 @@ public class RoomView extends JPanel {
 
     /**
      * Draws geometric placeholder room
-     * @param g the 2D graphics context
-     * @param x the pixel x coordinate of the rooms top left corner
-     * @param y the pixel y coordinate of the rooms top left corner
-     * @param size the edge length of the square room
+     * @param theG the 2D graphics context
+     * @param theX the pixel x coordinate of the rooms top left corner
+     * @param theY the pixel y coordinate of the rooms top left corner
+     * @param theSize the edge length of the square room
      */
-    private void drawFallbackRoom(Graphics2D g, int x, int y, int size) {
-        int doorSpan = size / 3;
+    private void drawFallbackRoom(Graphics2D theG, int theX, int theY, int theSize) {
+        int doorSpan = theSize / 3;
 
-        g.setColor(FLOOR);
-        g.fillRect(x, y, size, size);
-        g.setColor(WALL);
-        g.setStroke(new BasicStroke(10));
-        g.drawRect(x, y, size, size);
+        theG.setColor(FLOOR);
+        theG.fillRect(theX, theY, theSize, theSize);
+        theG.setColor(WALL);
+        theG.setStroke(new BasicStroke(10));
+        theG.drawRect(theX, theY, theSize, theSize);
 
-        drawFallbackDoor(g, currentRoom.getDoor(Direction.NORTH.ordinal()),
-                x + (size - doorSpan) / 2, y - 5, doorSpan, 10);
-        drawFallbackDoor(g, currentRoom.getDoor(Direction.SOUTH.ordinal()),
-                x + (size - doorSpan) / 2, y + size - 5, doorSpan, 10);
-        drawFallbackDoor(g, currentRoom.getDoor(Direction.WEST.ordinal()),
-                x - 5, y + (size - doorSpan) / 2, 10, doorSpan);
-        drawFallbackDoor(g, currentRoom.getDoor(Direction.EAST.ordinal()),
-                x + size - 5, y + (size - doorSpan) / 2, 10, doorSpan);
+        drawFallbackDoor(theG, myCurrentRoom.getDoor(Direction.NORTH.ordinal()),
+                theX + (theSize - doorSpan) / 2, theY - 5, doorSpan, 10);
+        drawFallbackDoor(theG, myCurrentRoom.getDoor(Direction.SOUTH.ordinal()),
+                theX + (theSize - doorSpan) / 2, theY + theSize - 5, doorSpan, 10);
+        drawFallbackDoor(theG, myCurrentRoom.getDoor(Direction.WEST.ordinal()),
+                theX - 5, theY + (theSize - doorSpan) / 2, 10, doorSpan);
+        drawFallbackDoor(theG, myCurrentRoom.getDoor(Direction.EAST.ordinal()),
+                theX + theSize - 5, theY + (theSize - doorSpan) / 2, 10, doorSpan);
 
-        g.setColor(Color.LIGHT_GRAY);
-        g.setFont(g.getFont().deriveFont(Font.BOLD, 14f));
-        g.drawString("N (W)", x + size / 2 - 18, y - 12);
-        g.drawString("S", x + size / 2 - 4, y + size + 22);
-        g.drawString("W", x - 28, y + size / 2 + 5);
-        g.drawString("E", x + size + 14, y + size / 2 + 5);
+        theG.setColor(Color.LIGHT_GRAY);
+        theG.setFont(theG.getFont().deriveFont(Font.BOLD, 14f));
+        theG.drawString("N (W)", theX + theSize / 2 - 18, theY - 12);
+        theG.drawString("S", theX + theSize / 2 - 4, theY + theSize + 22);
+        theG.drawString("W", theX - 28, theY + theSize / 2 + 5);
+        theG.drawString("E", theX + theSize + 14, theY + theSize / 2 + 5);
     }
 
     /**
      * Draws single door indicator
-     * @param g the 2D graphics context
-     * @param door the door to represent
-     * @param x the pixel x coordinate of the rooms top left corner
-     * @param y the pixel y coordinate of the rooms top left corner
-     * @param w the width of the door
-     * @param h the height of the door
+     * @param theG the 2D graphics context
+     * @param theDoor the door to represent
+     * @param theX the pixel x coordinate of the rooms top left corner
+     * @param theY the pixel y coordinate of the rooms top left corner
+     * @param theW the width of the door
+     * @param theH the height of the door
      */
-    private void drawFallbackDoor(Graphics2D g, Door door, int x, int y, int w, int h) {
-        if (door == null) {
+    private void drawFallbackDoor(Graphics2D theG, Door theDoor, int theX, int theY, int theW, int theH) {
+        if (theDoor == null) {
             return;
         }
-        if (door.isOpen()) {
-            g.setColor(OPEN);
-        } else if (door.isBlocked()) {
-            g.setColor(BLOCKED);
+        if (theDoor.isOpen()) {
+            theG.setColor(OPEN);
+        } else if (theDoor.isBlocked()) {
+            theG.setColor(BLOCKED);
         } else {
-            g.setColor(LOCKED);
+            theG.setColor(LOCKED);
         }
-        g.fillRect(x, y, w, h);
+        theG.fillRect(theX, theY, theW, theH);
     }
 }
